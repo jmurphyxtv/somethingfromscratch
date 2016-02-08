@@ -1,0 +1,27 @@
+{
+  "name": "somethingfromscratch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chiefsmurph/somethingfromscratch.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chiefsmurph/somethingfromscratch/issues"
+  },
+  "homepage": "https://github.com/chiefsmurph/somethingfromscratch",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "express": "^4.13.4",
+    "pg": "^4.4.4",
+    "socket.io": "^1.4.5",
+    "util": "^0.10.3"
+  }
+}
