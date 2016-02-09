@@ -39,8 +39,8 @@ p {
 
 }
 #container > h1 {
-  font-size: 3vh;
-  padding: 20px;
+  font-size: 6.3vh;
+  padding: 2vh;
   background-color: rgba(255,215,0,0.4);
   background-image: url('img/classy-fabric.png');
   text-align: center;
