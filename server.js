@@ -33,10 +33,8 @@ var routes = [
 ];
 
 var loadAsset = function(file, cb) {
-  console.log('asset');
   fs.readFile(__dirname + file, 'utf8', function(err, response) {
     if (err) {
-      console.error(err);
       cb('');
     } else {
       cb(response);
@@ -64,12 +62,14 @@ var getMapToFromPath = function(path) {
 
 var getPage = function(page, cb) {
   loadAsset('/public/' + page + '/' + page + '.js', function(js) {
-    loadAsset('/public/' + page + '/' + page + '.html', function(html) {
-      cb({
-        title: page,
-        js: js,
-        css: css,
-        html: html
+    loadAsset('/public/' + page + '/' + page + '.css', function(css) {
+      loadAsset('/public/' + page + '/' + page + '.html', function(html) {
+        cb({
+          title: page,
+          js: js,
+          css: css,
+          html: html
+        });
       });
     });
   });
