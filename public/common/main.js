@@ -1,7 +1,22 @@
 var socket;
+var windowHeight;
+var pagesVisited = [];
 // var isTouch;
 
 $(document).ready(function() {
+
+  var handleResize = function() {
+    windowHeight = $(window).height();
+    var distanceFromTop = $('#content').offset().top;
+    var footerHeight = ($(window).width()>=768) ? 50 : 23;
+    $('#content').css('height', (windowHeight-distanceFromTop-footerHeight) + 'px');
+  };
+
+  $( window ).resize(function() {
+    handleResize();
+  });
+
+  handleResize();
 
   function is_touch_device() {
     return 'ontouchstart' in window        // works on most browsers
@@ -17,6 +32,20 @@ $(document).ready(function() {
       $(this).clone(true).insertAfter($(this));
       $(this).remove();
     });
+  } else {
+    console.log('ok')
+    // $('#container').css('top', windowHeight + 'px');
+    // $('#container').css('position', 'relative');
+    $('#container').hide();
+    $('nav div').css('left', '-1000px');
+    $('nav div').css('position', 'relative');
+    // setTimeout(function() {
+    //   $('#container').animate({'top': '0px'}, 1500);
+    // }, 500);
+    $('#container').fadeIn(1000);
+    setTimeout(function() {
+      $('nav div').animate({'left': '0px'}, 1500, 'easeOutCubic');
+    }, 300);
   }
 
   $(".bgImg").each(function() {
@@ -47,20 +76,8 @@ $(document).ready(function() {
   socket.on('pageData', function(data) {
     window.history.pushState(data.html,data.title,data.title)
     $('#content > div').html(data.html);
-    $('#pageJS').html(data.js);
+    eval(data.js);
   });
 
-  var handleResize = function() {
-    var height = $(window).height();
-    var distanceFromTop = $('#content').offset().top;
-    var footerHeight = ($(window).width()>=768) ? 63 : 23;
-    $('#content').css('height', (height-distanceFromTop-footerHeight) + 'px');
-  };
-
-  $( window ).resize(function() {
-    handleResize();
-  });
-
-  handleResize();
 
 });
