@@ -25,7 +25,7 @@ $(document).ready(function() {
   });
 
   $('body').on('mouseover', 'nav a', function() {
-    $(this).animate({'borderRadius': '25px'}, 200, 'linear');
+    $(this).animate({'borderRadius': '25px'}, 200, 'easeOutCubic');
   });
 
   $('body').on('mouseout', 'nav a', function() {
