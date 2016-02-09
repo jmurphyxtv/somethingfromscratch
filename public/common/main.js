@@ -32,11 +32,13 @@ $(document).ready(function() {
     $(this).stop().animate({'borderRadius': '0px'}, 300, 'linear');
   });
 
-  $('body').on('click', 'nav a', function() {
-    // fixes sticky hovers on touch devices
-    $(this).clone(true).insertAfter($(this));
-    $(this).remove();
-  });
+  if (isTouch) {
+    $('body').on('click', 'nav a', function() {
+      // fixes sticky hovers on touch devices
+      $(this).clone(true).insertAfter($(this));
+      $(this).remove();
+    });
+  }
 
   socket = io();
 
