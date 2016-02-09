@@ -91,13 +91,10 @@ routes.forEach(function(route, i) {
   });
 });
 
-console.log('hereeee')
-
-
 app.use(express.static(__dirname + '/public'));
 app.use('*', function(req, res, next) {
-  console.log('easd');
-    getPageAndSendResponse('404', res);
+  console.log('404: ' + req.url);
+  getPageAndSendResponse('404', res);
 });
 
 io.on('connection', function(socket) {

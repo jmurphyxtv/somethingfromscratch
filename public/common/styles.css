@@ -17,14 +17,14 @@ a, a:visited {
 p {
   margin-top: 0;
 }
-#bgImg {
+.bgImg {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: -2;
-  opacity: 0.5;
+  opacity: 0.3;
 }
 #container {
   /*background-color: rgba(255,255,255,1.0) !important;*/
@@ -52,11 +52,11 @@ p {
   text-align: left;
   font-size: 2.5vh;
   overflow-y: scroll;
-  margin-top: 20px;
+  z-index: 1;
+  position: relative;
 }
 #container #content > div {
-
-  margin: 0 20px;
+  margin: 10px 20px;
 }
 #container #footer {
   position: absolute;
@@ -65,20 +65,26 @@ p {
   width: 100%;
   text-align: center;
   background-color: rgba(10,10,10,0.4);
-  height: 63px;
-  line-height: 63px;
+  height: 23px;
+  line-height: 23px;
   vertical-align: middle;
   font-family: monospace;
   letter-spacing: 2px;
   color: white;
-  font-size: 110%;
+  font-size: 60%;
+  text-align: left;
+  padding: 0 25px;
+}
+nav {
+  z-index: 100;
 }
 nav a {
   width: 100%;
   display: block;
   border-bottom: 1px solid rgba(10,10,10,0.1);
   padding: 10px 28px;
-  z-index: 2;
+  z-index: 12;
+  position: relative;
 }
 
 @media only screen and (min-width: 768px) {
@@ -91,9 +97,9 @@ nav a {
   nav a {
     margin-left: 10px;
     text-decoration: none;
-    border-radius: 15px;
+    /*border-radius: 0px;*/
     background-color: lightblue;
-    border: 1px solid rgba(255,255,255,0.5);
+    border: 1px solid rgba(255,255,255,0.8);
     display: inline;
   }
   #container > h1 {
@@ -104,6 +110,7 @@ nav a {
   nav a:hover {
     color: yellow;
     background-color: green;
+    text-decoration: underline;
   }
   #container {
     width: 80%;
@@ -111,10 +118,19 @@ nav a {
     text-align: left;
     background-color: rgba(100,0,0,0.1);
     border-radius: 20px 20px 0 0;
-    border: 1px solid rgba(150, 75, 0, 0.3);
-    border-bottom: 0;
   }
   #content > div {
     padding-top: 30px !important;
+  }
+  #container #content {
+    /*margin-top: 20px;*/
+    border-left: 1px solid rgba(150, 75, 0, 0.3);
+    border-right: 1px solid rgba(150, 75, 0, 0.3);
+  }
+  #container #footer {
+    text-align: center;
+    height: 63px;
+    line-height: 63px;
+    font-size: 110%;
   }
 }

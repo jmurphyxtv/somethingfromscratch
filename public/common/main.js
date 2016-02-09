@@ -2,11 +2,11 @@ var socket;
 
 $(document).ready(function() {
 
-  $( "#bgImg" ).each(function() {
-    var attr = $( "#bgImg" ).attr('data-image-src');
+  $(".bgImg").each(function() {
+    var attr = $(this).attr('data-image-src');
 
     if (typeof attr !== typeof undefined && attr !== false) {
-        $(this).css('background', 'url('+attr+')');
+      $(this).css('background', 'url('+attr+')');
     }
 
   });
