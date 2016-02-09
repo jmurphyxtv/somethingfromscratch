@@ -84,7 +84,7 @@ var getPageAndSendResponse = function(page, res) {
   });
 };
 
-routes.forEach(function(route, i) {
+routes.forEach(function(route) {
   app.get(route.paths, function(req, res, next) {
     var mapTo = getMapToFromPath(req.url);
     getPageAndSendResponse(mapTo, res);
