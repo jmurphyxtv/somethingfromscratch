@@ -1,6 +1,14 @@
 var socket;
+var isTouch;
 
 $(document).ready(function() {
+
+  function is_touch_device() {
+    return 'ontouchstart' in window        // works on most browsers
+        || navigator.maxTouchPoints;       // works on IE10/11 and Surface
+  };
+
+  isTouch = is_touch_device();
 
   $(".bgImg").each(function() {
     var attr = $(this).attr('data-image-src');
@@ -17,17 +25,17 @@ $(document).ready(function() {
   });
 
   $('body').on('mouseover', 'nav a', function() {
-    $(this).animate({'borderRadius': '25px'}, 300, 'linear');
+    $(this).animate({'borderRadius': '25px'}, 200, 'linear');
   });
 
   $('body').on('mouseout', 'nav a', function() {
-    $(this).stop().animate({'borderRadius': '0px'}, 250, 'linear');
+    $(this).stop().animate({'borderRadius': '0px'}, 300, 'linear');
   });
 
   $('body').on('click', 'nav a', function() {
+    // fixes sticky hovers on touch devices
     $(this).clone(true).insertAfter($(this));
     $(this).remove();
-    console.log('asd')
   });
 
   socket = io();
@@ -41,8 +49,8 @@ $(document).ready(function() {
   var handleResize = function() {
     var height = $(window).height();
     var distanceFromTop = $('#content').offset().top;
-    console.log(height, distanceFromTop);
-    $('#content').css('height', (height-distanceFromTop-23) + 'px');
+    var footerHeight = ($(window).width()>=768) ? 63 : 23;
+    $('#content').css('height', (height-distanceFromTop-footerHeight) + 'px');
   };
 
   $( window ).resize(function() {
