@@ -25,11 +25,11 @@ $(document).ready(function() {
   });
 
   $('body').on('mouseover', 'nav a', function() {
-    $(this).animate({'borderRadius': '25px'}, 200, 'linear');
+    $(this).animate({'borderRadius': '25px'}, 300, 'easeOutCubic');
   });
 
   $('body').on('mouseout', 'nav a', function() {
-    $(this).stop().animate({'borderRadius': '0px'}, 300, 'linear');
+    $(this).stop().animate({'borderRadius': '0px'}, 500, 'easeOutCubic');
   });
 
   if (isTouch) {
