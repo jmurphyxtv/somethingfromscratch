@@ -1,5 +1,5 @@
 var socket;
-var isTouch;
+// var isTouch;
 
 $(document).ready(function() {
 
@@ -10,6 +10,15 @@ $(document).ready(function() {
 
   isTouch = is_touch_device();
 
+  if (isTouch) {
+    $('body').on('click', 'nav a', function() {
+      // fixes sticky hovers on touch devices
+      console.log('touchasda');
+      $(this).clone(true).insertAfter($(this));
+      $(this).remove();
+    });
+  }
+
   $(".bgImg").each(function() {
     var attr = $(this).attr('data-image-src');
 
@@ -17,6 +26,20 @@ $(document).ready(function() {
       $(this).css('background', 'url('+attr+')');
     }
 
+  });
+
+  $('body').on('click', 'nav a', function(evt) {
+    evt.preventDefault();
+    socket.emit('getPage', {page: $(this).attr('href')});
+    $(this).blur();
+  });
+
+  $('body').on('mouseover', 'nav a', function() {
+    $(this).animate({'borderRadius': '25px'}, 200, 'easeOutCubic');
+  });
+
+  $('body').on('mouseout', 'nav a', function() {
+    $(this).stop().animate({'borderRadius': '0px'}, 300, 'linear');
   });
 
   socket = io();
@@ -39,28 +62,5 @@ $(document).ready(function() {
   });
 
   handleResize();
-
-
-    $('body').on('click', 'nav a', function(evt) {
-      socket.emit('getPage', {page: $(this).attr('href')});
-      evt.preventDefault();
-    });
-
-    $('body').on('mouseover', 'nav a', function() {
-      $(this).animate({'borderRadius': '25px'}, 300, 'easeOutCubic');
-    });
-
-    $('body').on('mouseout', 'nav a', function() {
-      $(this).stop().animate({'borderRadius': '0px'}, 500, 'easeOutCubic');
-    });
-
-    if (isTouch) {
-      console.log('asd');
-      $('body').on('click', 'nav a', function() {
-        // fixes sticky hovers on touch devices
-        $(this).clone(true).insertAfter($(this));
-        $(this).remove();
-      });
-    }
 
 });
