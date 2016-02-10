@@ -5,19 +5,6 @@ var pagesVisited = [];
 
 $(document).ready(function() {
 
-  var handleResize = function() {
-    windowHeight = $(window).height();
-    var distanceFromTop = $('#content').offset().top;
-    var footerHeight = ($(window).width()>=768) ? 50 : 23;
-    $('#content').css('height', (windowHeight-distanceFromTop-footerHeight) + 'px');
-  };
-
-  $( window ).resize(function() {
-    handleResize();
-  });
-
-  handleResize();
-
   function is_touch_device() {
     return 'ontouchstart' in window        // works on most browsers
         || navigator.maxTouchPoints;       // works on IE10/11 and Surface
@@ -78,6 +65,18 @@ $(document).ready(function() {
     $('#content > div').html(data.html);
     eval(data.js);
   });
+  var handleResize = function() {
+    windowHeight = $(window).height();
+    var distanceFromTop = $('#content').offset().top;
+    var footerHeight = ($(window).width()>=768) ? 50 : 35;
+    console.log(windowHeight,distanceFromTop,footerHeight);
+    $('#content').css('height', (windowHeight-distanceFromTop-footerHeight) + 'px');
+  };
 
+  $( window ).resize(function() {
+    handleResize();
+  });
+
+  handleResize();
 
 });
