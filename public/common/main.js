@@ -29,8 +29,13 @@ $(document).ready(function() {
     $('body').on('click', 'nav a', function() {
       // fixes sticky hovers on touch devices
       console.log('touchasda');
-      $(this).clone(true).insertAfter($(this));
-      $(this).remove();
+      var $btn = $(this);
+      $btn.clone(true).insertAfter($(this));
+      $btn.remove();
+      setTimeout(function() {
+        // maybe?
+        $btn.blur();
+      }, 700);
     });
   } else {
     console.log('ok')
@@ -44,8 +49,8 @@ $(document).ready(function() {
     // }, 500);
     $('#container').fadeIn(1000);
     setTimeout(function() {
-      $('nav div').animate({'left': '0px'}, 1500, 'easeOutCubic');
-    }, 300);
+      $('nav div').animate({'left': '0px'}, 2500, 'easeOutCubic');
+    }, 2300);
   }
 
   $(".bgImg").each(function() {
@@ -63,13 +68,13 @@ $(document).ready(function() {
     $(this).blur();
   });
 
-  $('body').on('mouseover', 'nav a', function() {
-    $(this).animate({'borderRadius': '25px'}, 200, 'easeOutCubic');
-  });
-
-  $('body').on('mouseout', 'nav a', function() {
-    $(this).stop().animate({'borderRadius': '0px'}, 300, 'linear');
-  });
+  // $('body').on('mouseover', 'nav span', function() {
+  //   $(this).find('a').animate({'borderRadius': '25px'}, 200, 'easeOutCubic');
+  // });
+  //
+  // $('body').on('mouseout', 'nav span', function() {
+  //   $(this).find('a').stop().animate({'borderRadius': '0px'}, 300, 'linear');
+  // });
 
   socket = io();
 

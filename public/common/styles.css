@@ -78,11 +78,10 @@ p {
 nav {
   z-index: 100;
 }
-nav a {
+nav span {
   width: 100%;
   display: block;
   border-bottom: 1px solid rgba(10,10,10,0.1);
-  padding: 10px 28px;
   z-index: 12;
   position: relative;
   text-align: left;
@@ -95,21 +94,24 @@ nav a {
     background-color: black;
     width: auto;
   }
-  nav a {
+  nav span {
     margin-left: 10px;
     text-decoration: none;
     /*border-radius: 0px;*/
-    background-color: lightblue;
-    border: 1px solid rgba(255,255,255,0.8);
     display: inline;
     text-align: center;
+  }
+  nav a {
+    background-color: lightblue;
+    border: 1px solid rgba(255,255,255,0.8);
+    padding: 10px 28px;
   }
   #container > h1 {
     border-radius: 20px 20px 0 0;
     font-size: 8vw;
     padding: 25px 20px 40px;
   }
-  nav a:hover, nav a:focus {
+  nav a:hover {
     color: yellow;
     background-color: green;
     text-decoration: underline;
