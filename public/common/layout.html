@@ -19,7 +19,14 @@
     <script id="pageJS">
     {john-bindJS}
     </script>
-
+		<script>
+		$(function() {
+			var navRoutes = ['Home','About','Rankings','Contact'];
+			navRoutes.forEach(function(route) {
+				$('nav').append('<a href="/' + route.toLowerCase() + '">' + route + '</a>');
+			});
+		})
+		</script>
 	</head>
 	<body>
 
@@ -27,14 +34,7 @@
 
 		<div id="container">
 			<h1>John's Music</h1>
-			<nav>
-				<div>
-					<a href="/home">Home</a>
-					<a href="/about">About</a>
-					<a href="/rankings">Rankings</a>
-					<a href="/contact">Contact</a>
-				</div>
-			</nav>
+			<nav></nav>
 			<div id='content'>
 				<div>
 				{john-bindHTML}
