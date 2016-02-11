@@ -61,7 +61,9 @@ $(document).ready(function() {
     var clickedPage = getPageFromUrl(currentMage, pageClicked);
     $('#content div').html(clickedPage.content);
     document.title = currentMage.name + ' | ' + clickedPage.name;
-    window.history.pushState(clickedPage.content,clickedPage.name,clickedPage.name.toLowerCase());
+    var pathsplit = window.location.pathname.split('/');
+    var prepend = (pathsplit.length === 2) ? pathsplit[1]+'/' : '';
+    window.history.pushState(clickedPage.content,clickedPage.name,prepend+clickedPage.name.toLowerCase());
     $(this).blur();
     setSelectedNav($(this));
   });

@@ -156,6 +156,7 @@
 			var relatedQuestion = questions[num-1];
 			$('#nameHeader').html(relatedQuestion.name);
 			$('#inputArea').html(renderTypes[relatedQuestion.renderAs].markup);
+			$('#inputArea').focus();
 		}
 
 		var submitPage = function() {
@@ -190,6 +191,7 @@
 
 		<style>
 		#container {
+			z-index: 100;
 			text-align: center;s
 
 			min-height: 100%;  /* Fallback for vh unit */
@@ -255,11 +257,17 @@
 			border: 2px solid black;
 			padding: 1em;
 		}
+		select {
+			font-size: 150%;
+		}
 		input[type="text"]:focus {
 			border: 2px solid blue;
 		}
 		.trumbowyg-box {
 			text-align: left;
+		}
+		input[type="submit"], button {
+			cursor: pointer;
 		}
 		</style>
 
@@ -275,10 +283,10 @@
 		</div>
 
 		<table id='question'>
-			<tr style="height: 30%">
+			<tr style="height: 20%">
 				<td id="nameHeader"></td>
 			</tr>
-			<tr style="height: 50%">
+			<tr style="height: 30%">
 				<td id="inputArea"></td>
 			</tr>
 			<tr>
@@ -287,11 +295,11 @@
 		</table>
 
 		<table id='pageDesigner'>
-			<tr style="height: 30%">
-				<td id="pageHeader">da</td>
-			</tr>
-			<tr style="height: 20%">
-				<td><input type="text" id="pageName" placeholder="page name"></td>
+			<tr style="height: 15%">
+				<td>
+					<div id="pageHeader"></div>
+					<input type="text" id="pageName" placeholder="page name">
+				</td>
 			</tr>
 			<tr style="height: 50%">
 				<td><textarea id="wysiwyg"></textarea></td>
