@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Mage Creator</title>
+		<meta property="og:url" content="http://www.MusicPlatform.com" />
+		<meta property="og:title" content="Music Platform" />
+		<meta property="og:description" content="A community where people can upload and share their music." />
+		<meta property="og:image" content="http://www.tapfour10dollars.com/23f26651cb36afb340d6c39fe2753d82.png" />
+		<script src="https://code.jquery.com/jquery-1.9.0.min.js"></script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<link href='https://fonts.googleapis.com/css?family=Candal' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="/common/base.css">
+
+<link rel="stylesheet" href="https://cdn.rawgit.com/Alex-D/Trumbowyg/2.0.0-beta.7/dist/ui/trumbowyg.min.css">
+		<script type="text/javascript" src="/common/js/jquery.trumbowyg.js"></script>
+		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+		<script>
+
+		var socket = io();
+
+		var currentlyAnswering;
+		var answers = [];
+		var onPage;
+
+		var start = function(evt) {
+			currentlyAnswering = 1;
+			$this = $(evt.target);
+			$this.fadeOut(500, function() {
+				$('#question').show();
+				startQuestions();
+			});
+		};
+
+		var renderTypes = {
+			'TextInput': {
+				markup: '<input type="text">',
+				getVal: '$("#inputArea").find("input").val()'
+			},
+			'SelectBox': {
+				markup: '<select><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>',
+				getVal: 'parseInt($("#inputArea").find("select").val())'
+			}
+		};
+
+		var validateInputVal = function(val, restrictions) {
+			if (restrictions.max && val.length > restrictions.max) {
+				console.log('max')
+				return false;
+			} else if (restrictions.min && val.length < restrictions.min) {
+				console.log('min')
+				return false;
+			} else if (restrictions.mustBe && restrictions.mustBe.indexOf(val) === -1) {
+				debugger;
+				console.log('mustbe' + restrictions.mustBe.indexOf(val) + restrictions.mustBe + ' ' + val)
+				return false;
+			} else if (restrictions.noInclude) {
+				var badChars = restrictions.noInclude.split()
+				for (var i = 0; i < badChars.length; i++) {
+					if (val.indexOf(badChars[i]) > -1) {
+						return false;
+					}
+				};
+			}
+			return true;
+		};
+
+		var submitAnswer = function() {
+			var curQuestion = questions[currentlyAnswering-1];
+			var curInputVal = eval(renderTypes[curQuestion.renderAs].getVal);
+			console.log(curInputVal);
+			if (validateInputVal(curInputVal, curQuestion.restrictions)) {
+
+				answers.push(curInputVal);
+				if (currentlyAnswering < 2) {
+					$('#question').animate({'left': '-100%'}, 1000, function() {
+						currentlyAnswering++;
+						displayQuestion(currentlyAnswering);
+						$('#question').css('left', '100%');
+						$('#question').animate({'left': '0%'});
+					});
+				} else if (currentlyAnswering === 2) {
+					console.log('here now')
+					currentlyAnswering++;
+					onPage = 1;
+					$('#question').hide();
+					$('#pageDesigner').show();
+
+					displayPageDesigner();
+				} else if (currentlyAnswering === 3) {
+					$('#question').hide();
+					var createdMage = answersToMage(answers);
+					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a>">');
+					socket.emit('createMage', {mage: createdMage});
+				}
+				console.log('valid');
+			} else {
+				console.log('invalid');
+			}
+		};
+
+		var answersToMage = function(answers) {
+			return {
+				url: answers[answers.length-1],
+				name: answers[0],
+				pages: answers.filter(function(item) {
+					if (item.name) {
+						return item;
+					}
+				})
+			}
+		}
+
+		var displayPageDesigner = function() {
+			$('#pageHeader').text('design page #' + onPage + ' here...');
+			$('#pageName').val('');
+			$('#wysiwyg').trumbowyg();
+			$('#wysiwyg').trumbowyg('empty');
+		}
+
+		var questions = [
+			{
+				name: 'Enter a name for your Mage',
+				renderAs: 'TextInput',
+				restrictions: {
+					min: 3,
+					max: 12
+				}
+			},
+			{
+				name: 'How many pages would you like on your Mage?',
+				renderAs: 'SelectBox',
+				restrictions: {
+					mustBe: "1234"
+				}
+			},
+			{
+				name: 'Choose a url for your Mage',
+				renderAs: 'TextInput',
+				restrictions: {
+					min: 3,
+					max: 15,
+					noInclude: ' '
+				}
+			}
+		];
+
+		var startQuestions = function() {
+			displayQuestion(currentlyAnswering);
+		}
+
+		var displayQuestion = function(num) {
+			var relatedQuestion = questions[num-1];
+			$('#nameHeader').html(relatedQuestion.name);
+			$('#inputArea').html(renderTypes[relatedQuestion.renderAs].markup);
+		}
+
+		var submitPage = function() {
+			answers.push({
+				name: $('#pageName').val(),
+				content: $('#wysiwyg').trumbowyg('html')
+			});
+			var animateOut = function(cb) {
+				$('#pageDesigner').animate({'left': '-100%'}, 1000, cb);
+			}
+			if (onPage == answers[1]) {
+				animateOut(function() {
+					$('#pageDesigner').hide();
+					$('#question').show();
+					displayQuestion(currentlyAnswering);
+					console.log('time fo rurl');
+				});
+			} else {
+				animateOut(function() {
+					onPage++;
+					displayPageDesigner();
+					$('#pageDesigner').css('left', '100%');
+					$('#pageDesigner').animate({'left': '0%'});
+				});
+			}
+		}
+
+		$(function() {
+
+		})
+		</script>
+
+		<style>
+		#container {
+			text-align: center;s
+
+			min-height: 100%;  /* Fallback for vh unit */
+			min-height: 100vh; /* You might also want to use
+											'height' property instead.
+
+											Note that for percentage values of
+											'height' or 'min-height' properties,
+											the 'height' of the parent element
+											should be specified explicitly.
+
+											In this case the parent of '.vertical-center'
+											is the <body> element */
+
+			/* Make it a flex container */
+			display: -webkit-box;
+			display: -moz-box;
+			display: -ms-flexbox;
+			display: -webkit-flex;
+			display: flex;
+
+			/* Align the bootstrap's container vertically */
+				-webkit-box-align : center;
+			-webkit-align-items : center;
+					 -moz-box-align : center;
+					 -ms-flex-align : center;
+							align-items : center;
+
+			/* In legacy web browsers such as Firefox 9
+				 we need to specify the width of the flex container */
+			width: 100%;
+
+			/* Also 'margin: 0 auto' doesn't have any effect on flex items in such web browsers
+				 hence the bootstrap's container won't be aligned to the center anymore.
+
+				 Therefore, we should use the following declarations to get it centered again */
+						 -webkit-box-pack : center;
+								-moz-box-pack : center;
+								-ms-flex-pack : center;
+			-webkit-justify-content : center;
+							justify-content : center;
+		}
+		#container > button {
+			background-color: navy;
+			color: yellow;
+			padding: 4vh;
+			font-size: 4vh;
+			border: 1px solid yellow;
+			outline: 0;
+		}
+		table#question, table#pageDesigner {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			font-size: 200%;
+			display: none;
+		}
+		input, select {
+			font-size: 100%;
+			width: 80%;
+			border: 2px solid black;
+			padding: 1em;
+		}
+		input[type="text"]:focus {
+			border: 2px solid blue;
+		}
+		.trumbowyg-box {
+			text-align: left;
+		}
+		</style>
+
+
+
+	</head>
+	<body>
+
+		<div id="container">
+
+			<button onclick="start(event)">Let's Get Cookin'!</button>
+			<div id="results"></div>
+		</div>
+
+		<table id='question'>
+			<tr style="height: 30%">
+				<td id="nameHeader"></td>
+			</tr>
+			<tr style="height: 50%">
+				<td id="inputArea"></td>
+			</tr>
+			<tr>
+				<td><input type="submit" value="submit" onclick="submitAnswer()"></td>
+			</tr>
+		</table>
+
+		<table id='pageDesigner'>
+			<tr style="height: 30%">
+				<td id="pageHeader">da</td>
+			</tr>
+			<tr style="height: 20%">
+				<td><input type="text" id="pageName" placeholder="page name"></td>
+			</tr>
+			<tr style="height: 50%">
+				<td><textarea id="wysiwyg"></textarea></td>
+			</tr>
+			<tr>
+				<td><input type="submit" value="submit page" onclick="submitPage()"></td>
+			</tr>
+		</table>
+
+  </body>
+</html>
