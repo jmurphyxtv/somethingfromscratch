@@ -63,6 +63,7 @@ $(document).ready(function() {
     document.title = currentMage.name + ' | ' + clickedPage.name;
     window.history.pushState(clickedPage.content,clickedPage.name,clickedPage.name.toLowerCase());
     $(this).blur();
+    setSelectedNav($(this));
   });
 
   $('body').on('click', 'nav a', function(evt) {
@@ -97,5 +98,17 @@ $(document).ready(function() {
   });
 
   handleResize();
+
+  var curPage = window.location.pathname.split('/')[2];
+  if (curPage) {
+    setSelectedNav($('nav a[href="/' + curPage + '"]'));
+  } else {
+    setSelectedNav($('nav a').first());
+  }
+
+  function setSelectedNav($navEl) {
+    $('nav a').removeClass('selected-nav');
+    $navEl.addClass('selected-nav');
+  };
 
 });

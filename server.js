@@ -111,6 +111,9 @@ var generateRoutesForMage = function(username, mage) {
       console.log('reqpage' + reqPage)
       getPageAndSendResponse(mage, reqPage, res);
     });
+    app.get('/' + mage.url + '/', function(req, res, next) {
+      getPageAndSendResponse(mage, mage.pages[0].name, res);
+    });
   }
 }
 generateRoutesForMage(sampleMage.username, sampleMage);
