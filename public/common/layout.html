@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Music Platform</title>
-		<meta property="og:url" content="http://www.Music Platform.com" />
+		<title>{john-bindTitle}</title>
+		<meta property="og:url" content="http://www.MusicPlatform.com" />
 		<meta property="og:title" content="Music Platform" />
 		<meta property="og:description" content="A community where people can upload and share their music." />
 		<meta property="og:image" content="http://www.tapfour10dollars.com/23f26651cb36afb340d6c39fe2753d82.png" />
@@ -12,35 +12,47 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<link href='https://fonts.googleapis.com/css?family=Candal' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="./common/styles.css">
+    <link rel="stylesheet" href="/common/styles.css">
 		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
 		<script>
+		// $(function() {
+		// 	var navRoutes = ['Home','About','Rankings','Contact'];
+		// 	navRoutes.forEach(function(route) {
+		// 		$('nav').append('<a href="/' + route.toLowerCase() + '">' + route + '</a>');
+		// 	});
+		// })
+
+		var currentMage = {john-bindMage};
 		$(function() {
-			var navRoutes = ['Home','About','Rankings','Contact'];
-			navRoutes.forEach(function(route) {
-				$('nav').append('<a href="/' + route.toLowerCase() + '">' + route + '</a>');
-			});
+			var bakeAmage = function(mage) {
+				var navRoutes = mage.pages.map(function(page) {
+					return page.name;
+				});
+				navRoutes.forEach(function(route) {
+					$('nav').append('<a href="/' + route.toLowerCase() + '">' + route + '</a>');
+				});
+				$('#container > h1').text(mage.name);
+			}
+			bakeAmage(currentMage);
 		})
 		</script>
 
-		<script src="./common/main.js"></script>
+		<script src="/common/main.js"></script>
 
-    <script id="pageJS">
-    {john-bindJS}
-    </script>
+
 
 	</head>
 	<body>
 
-		<div class='bgImg' data-image-src="./common/img/cartographer.png"></div>
+		<div class='bgImg' data-image-src="/common/img/cartographer.png"></div>
 
 		<div id="container">
 			<h1>John's Music</h1>
 			<nav></nav>
 			<div id='content'>
 				<div>
-				{john-bindHTML}
+				{john-bindContent}
 				</div>
 			</div>
 		</div>
