@@ -18,6 +18,43 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.set('case sensitive routing', false);
+//
+// var mageModel = {
+//   'name': {
+//     renderAs: 'TextInput',
+//     restrictions: {
+//       min: 3,
+//       max: 15
+//     }
+//   },
+//   'numPages': {
+//     renderAs: 'SelectBox',
+//     restrictions: {
+//       mustBe: [2, 3, 4, 5];
+//     }
+//   },
+//   'pageName': 'TextInput'
+// }
+// var mageModel = [
+//   {
+//     name: 'name',
+//     renderAs: 'TextInput',
+//     restrictions: {
+//       min: 3,
+//       max: 15
+//     }
+//   },
+//   {
+//     name: 'numPages',
+//     renderAs: 'SelectBox',
+//     restrictions: {
+//       mustBe: [2, 3, 4, 5];
+//     }
+//   },
+//   {
+//     name: 'pageName',
+//   }
+// ]
 
 var sampleMage = {
   url: 'donkeybrain',
@@ -105,6 +142,7 @@ var getPageFromPath = function(mage, path) {
 var generateRoutesForMage = function(username, mage) {
   var pages = mage.pages;
   for (var i = 0; i < pages.length; i++) {
+    console.log('new route: ' + '/' + mage.url + '/' + pages[i].name);
     app.get('/' + mage.url + '/' + pages[i].name, function(req, res, next) {
       var reqPage = req.url.split('/').pop();
       console.log('reqpage' + reqPage)
@@ -118,11 +156,19 @@ var generateRoutesForMage = function(username, mage) {
 generateRoutesForMage(sampleMage.username, sampleMage);
 
 app.use(express.static(__dirname + '/public'));
-app.use(function(req, res, next) {
-  console.log('404: ' + req.url);
-  // getPageAndSendResponse('404', res);
-  res.send('You\'re lost');
-});
+// app.use(function(req, res, next) {
+//   console.log('404: ' + req.url);
+//   // getPageAndSendResponse('404', res);
+//   res.send('You\'re lost');
+// });
 
 io.on('connection', function(socket) {
+  console.log('connected');
+  socket.on('createMage', function(data) {
+    console.log('generating for ' + data.mage.url);
+    generateRoutesForMage(data.mage.url, data.mage);
+    console.log();
+    console.log(data.mage);
+    console.log();
+  })
 });
