@@ -29,6 +29,7 @@
 		var start = function(evt) {
 			currentlyAnswering = 1;
 			$this = $(evt.target);
+			$('#container img').fadeOut(500);
 			$this.fadeOut(500, function() {
 				$('#question').show();
 				startQuestions();
@@ -47,20 +48,25 @@
 		};
 
 		var validateInputVal = function(val, restrictions) {
+			console.log('validating ' + val + ' with restrictions ' + restrictions);
 			if (restrictions.max && val.length > restrictions.max) {
 				console.log('max')
+				displayAlert('maximum length: ' + restrictions.max);
 				return false;
 			} else if (restrictions.min && val.length < restrictions.min) {
+				displayAlert('minnimum length: ' + restrictions.min);
 				console.log('min')
 				return false;
 			} else if (restrictions.mustBe && restrictions.mustBe.indexOf(val) === -1) {
 				debugger;
+				displayAlert('must be: ' + restrictions.mustBe);
 				console.log('mustbe' + restrictions.mustBe.indexOf(val) + restrictions.mustBe + ' ' + val)
 				return false;
 			} else if (restrictions.noInclude) {
 				var badChars = restrictions.noInclude.split()
 				for (var i = 0; i < badChars.length; i++) {
 					if (val.indexOf(badChars[i]) > -1) {
+						displayAlert('cant include: ' + restrictions.noInclude);
 						return false;
 					}
 				};
@@ -93,7 +99,7 @@
 				} else if (currentlyAnswering === 3) {
 					$('#question').hide();
 					var createdMage = answersToMage(answers);
-					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a>">');
+					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a>');
 					socket.emit('createMage', {mage: createdMage});
 				}
 				console.log('valid');
@@ -184,12 +190,27 @@
 			}
 		}
 
+		var displayAlert = function(text) {
+			$('#alert').text(text);
+			$('#alert').show();
+			$('#alert').animate({width: '100%'});
+			setTimeout(function() {
+				$('#alert').fadeOut('fast', function() {
+					$('#alert').css({width: '0'});
+				});
+			}, 1100);
+
+		}
+
 		$(function() {
 
 		})
 		</script>
 
 		<style>
+		html, body {
+			background-color: lightblue;
+		}
 		#container {
 			z-index: 100;
 			text-align: center;s
@@ -234,7 +255,19 @@
 			-webkit-justify-content : center;
 							justify-content : center;
 		}
-		#container > button {
+		.trumbowyg-box {
+			background-color: white;
+		}
+		#container > div {
+			width: 100%;
+		}
+		#container img {
+			display: block;
+			clear: both;
+			width: 20%;
+			margin: 0 auto;
+		}
+		#container > div > button {
 			background-color: navy;
 			color: yellow;
 			padding: 4vh;
@@ -269,6 +302,20 @@
 		input[type="submit"], button {
 			cursor: pointer;
 		}
+		#alert {
+			background-color: red;
+			border-top: 2px solid navy;
+			border-bottom: 2px solid navy;
+			display: none;
+			padding: 4vh 0;
+			z-index: 100;
+			width: 0;
+			font-size: 4vh;
+		}
+		#nameHeader {
+			background-color: black;
+			color: white;
+		}
 		</style>
 
 
@@ -277,9 +324,13 @@
 	<body>
 
 		<div id="container">
+			<div>
 
-			<button onclick="start(event)">Let's Get Cookin'!</button>
-			<div id="results"></div>
+				<img src="https://pixabay.com/static/uploads/photo/2014/04/02/14/12/chef-306513_960_720.png">
+				<br><button onclick="start(event)">Let's Get Cookin'!</button>
+				<div id="results"></div>
+				<div id="alert"></div>
+			<div>
 		</div>
 
 		<table id='question'>
