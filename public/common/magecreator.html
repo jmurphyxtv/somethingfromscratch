@@ -44,6 +44,10 @@
 			'SelectBox': {
 				markup: '<select><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>',
 				getVal: 'parseInt($("#inputArea").find("select").val())'
+			},
+			'UrlCompleter': {
+				markup: '<div class="urlcompleter"><div></div><input type="text"></div>',
+				getVal: '$("#inputArea").find("input").val()'
 			}
 		};
 
@@ -66,7 +70,7 @@
 				var badChars = restrictions.noInclude.split()
 				for (var i = 0; i < badChars.length; i++) {
 					if (val.indexOf(badChars[i]) > -1) {
-						displayAlert('cant include: ' + restrictions.noInclude);
+						displayAlert('cant include: ' + JSON.stringify(restrictions.noInclude));
 						return false;
 					}
 				};
@@ -99,7 +103,7 @@
 				} else if (currentlyAnswering === 3) {
 					$('#question').hide();
 					var createdMage = answersToMage(answers);
-					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + window.location.hostname + '/' + createdMage.url + '</pre>');
+					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location + '/' + createdMage.url + '</pre>');
 					socket.emit('createMage', {mage: createdMage});
 				}
 				console.log('valid');
@@ -145,7 +149,7 @@
 			},
 			{
 				name: 'Choose a url for your Mage',
-				renderAs: 'TextInput',
+				renderAs: 'UrlCompleter',
 				restrictions: {
 					min: 3,
 					max: 15,
@@ -162,6 +166,9 @@
 			var relatedQuestion = questions[num-1];
 			$('#nameHeader').html(relatedQuestion.name);
 			$('#inputArea').html(renderTypes[relatedQuestion.renderAs].markup);
+			if (relatedQuestion.renderAs === "UrlCompleter") {
+				$('.urlcompleter div').text('http://' + document.location.host + '/');
+			}
 			$('#inputArea').focus();
 		}
 
@@ -320,6 +327,20 @@
 		.trumbowyg-box * {
 			font-family: initial;
 			font-size: initial;
+		}
+		.trumbowyg-box {
+			border: 2px solid black;
+		}
+		.urlcompleter {
+			border: 2px solid black;
+			padding: 1vh 1vw;
+			margin-top: 1vh;
+			background-color: rgba(0,0,255,0.4);
+		}
+		.urlcompleter  div {
+			width: 100%;
+			background-color: rgba(255,255,255,0.6);
+			padding: 1vh 1vw;
 		}
 		</style>
 
