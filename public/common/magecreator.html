@@ -29,7 +29,7 @@
 		var start = function(evt) {
 			currentlyAnswering = 1;
 			$this = $(evt.target);
-			$('#container img').fadeOut(500);
+			$('#container #startremove').fadeOut(500);
 			$this.fadeOut(500, function() {
 				$('#question').show();
 				startQuestions();
@@ -99,7 +99,7 @@
 				} else if (currentlyAnswering === 3) {
 					$('#question').hide();
 					var createdMage = answersToMage(answers);
-					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a>');
+					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + window.location.hostname + '/' + createdMage.url + '</pre>');
 					socket.emit('createMage', {mage: createdMage});
 				}
 				console.log('valid');
@@ -325,9 +325,12 @@
 
 		<div id="container">
 			<div>
-
-				<img src="https://pixabay.com/static/uploads/photo/2014/04/02/14/12/chef-306513_960_720.png">
-				<br><button onclick="start(event)">Let's Get Cookin'!</button>
+				<div id="startremove">
+					<h1>welcome to bake a mage</h1>
+					<h3>why make just another web page when you can bake a mage?</h3><br>
+					<img src="https://pixabay.com/static/uploads/photo/2014/04/02/14/12/chef-306513_960_720.png">
+				</div>
+				<button onclick="start(event)">Let's Get Cookin'!</button>
 				<div id="results"></div>
 				<div id="alert"></div>
 			<div>
