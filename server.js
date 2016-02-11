@@ -19,9 +19,8 @@ app.use(bodyParser.json())
 
 app.set('case sensitive routing', false);
 
-
 var sampleMage = {
-  url: 'calgaryjames',
+  url: 'donkeybrain',
   name: 'Cal\'s Mage',
   pages: [
     {
@@ -122,6 +121,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(function(req, res, next) {
   console.log('404: ' + req.url);
   // getPageAndSendResponse('404', res);
+  res.send('You\'re lost');
 });
 
 io.on('connection', function(socket) {

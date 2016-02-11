@@ -88,6 +88,9 @@ nav a {
   text-align: left;
   font-size: 2vh;
 }
+nav a.selected-nav {
+  background-color: rgba(173, 216, 230, 0.4);
+}
 
 @media only screen and (min-width: 768px) {
   nav {
@@ -111,6 +114,7 @@ nav a {
     cursor: default !important;
     border: 0;
     padding: 14px 33px;
+    background-color: lightblue;
   }
   #container > h1 {
     border-radius: 20px 20px 0 0;
@@ -136,6 +140,7 @@ nav a {
     /*margin-top: 20px;*/
     border-left: 1px solid rgba(150, 75, 0, 0.3);
     border-right: 1px solid rgba(150, 75, 0, 0.3);
+    font-size: 2vw;
   }
   #footer {
     text-align: center;
