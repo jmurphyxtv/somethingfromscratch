@@ -111,7 +111,7 @@ var getPageFromUrl = function(mage, pageReq) {
 var getPageAndSendResponse = function(mage, pageReq, res) {
   var page = getPageFromUrl(mage, pageReq);
   if (page !== null) {
-    var resHTML = layoutHTML.replace('{john-bindMage}', JSON.stringify(mage)).replace('{john-bindContent}', page.content).replace('{john-bindContent}', page.content).replace('{john-bindTitle}', mage.name + ' | ' + page.name);
+    var resHTML = layoutHTML.replace('{john-bindMage}', JSON.stringify(mage)).replace('{john-bindContent}', page.content).replace('{john-bindTitle}', mage.name + ' | ' + page.name).replace('{john-bindHeader}', mage.name);
     res.writeHead(200, {'Content-Type': 'text/html'});
     res.write(resHTML);
     res.end();

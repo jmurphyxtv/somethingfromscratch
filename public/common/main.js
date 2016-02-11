@@ -80,6 +80,11 @@ $(document).ready(function() {
   //   $(this).stop().animate({'borderRadius': '0px'}, 300, 'linear');
   // });
 
+  var $header = $('#container > h1');
+  if ($header.text().length > 13) {
+    $header.css('font-size', parseInt($header.css('font-size'))/2);
+  }
+
   socket = io();
 
   socket.on('pageData', function(data) {
