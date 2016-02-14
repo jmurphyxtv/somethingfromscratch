@@ -280,10 +280,11 @@ var dbFunctions = {
     });
   },
   checkUrlTaken: function(url, cb) {
+    console.log('checking ' + url);
     pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
-      client.query('SELECT * FROM mages WHERE url = "' + url + '"', function(err, result) {
+      client.query('SELECT * FROM mages WHERE url = \'' + url + '\'', function(err, result) {
         done();
-        cb(result.rows > 0);
+        cb(!!result.rows.length);
       });
     });
   }
