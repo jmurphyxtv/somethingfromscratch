@@ -205,7 +205,7 @@ io.on('connection', function(socket) {
     console.log('generating for ' + data.mage.url);
     var url = data.mage.url;
     delete data.mage.url;
-    dbFunctions.createMage(url, data.mage, clientIp, loc, function() {
+    dbFunctions.createNewMage(url, data.mage, clientIp, loc, function() {
       generateRoutesForMage(url, data.mage);
       console.log();
       console.log(data.mage);
