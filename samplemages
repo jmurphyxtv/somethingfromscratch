@@ -37,4 +37,13 @@
         content: 'corey and topanga- proven' },
       { name: 'nachos are delicious',
         content: '<p>cheese</p><p>chips</p><p>guaacamole</p><p>sour cream</p><p>beans</p><p>beef</p><p>jalepenos</p><p>hot sauce</p><br><p>"that sounds good!"</p>' } ] }
-  
+
+{ url: 'Slither',
+   headerColor: 'rgb(185, 44, 185)',
+   backgroundImage: 'https://johns-norcal.s3.amazonaws.com/image.jpeg',
+   name: 'Slither Whips',
+   pages:
+    [ { name: 'Party!',
+        content: '<br><br><br><br>Party in San Francisco tonight! February 13 be there!!!' },
+      { name: 'Yep Yep',
+        content: '<br><br><br><br><br><p>Wolves Dance A Lot</p>I Dance More' } ] }

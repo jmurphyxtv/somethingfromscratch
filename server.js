@@ -175,6 +175,18 @@ var generateRoutesForMage = function(username, mage) {
   }
 }
 generateRoutesForMage(sampleMage.username, sampleMage);
+generateRoutesForMage('Slither',
+  {
+    url: 'Slither',
+     headerColor: 'rgb(185, 44, 185)',
+     backgroundImage: 'https://johns-norcal.s3.amazonaws.com/image.jpeg',
+     name: 'Slither Whips',
+     pages:
+      [ { name: 'Party!',
+          content: '<br><br><br><br>Party in San Francisco tonight! February 13 be there!!!' },
+        { name: 'Yep Yep',
+          content: '<br><br><br><br><br><p>Wolves Dance A Lot</p>I Dance More' }
+      ] });
 
 app.use(express.static(__dirname + '/public'));
 // app.use(function(req, res, next) {
