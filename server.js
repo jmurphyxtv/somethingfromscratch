@@ -284,7 +284,7 @@ var dbFunctions = {
     pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
       client.query('SELECT * FROM mages WHERE url = \'' + url + '\'', function(err, result) {
         done();
-        cb(!!result.rows.length);
+        cb(!result.rows.length);
       });
     });
   }

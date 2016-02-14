@@ -174,7 +174,7 @@
 							socket.emit('createMage', {mage: createdMage});
 						} else {
 							answers.pop();
-							displayAlert('username already taken');
+							displayAlert('username already taken', curInputVal);
 						}
 					})
 				}
