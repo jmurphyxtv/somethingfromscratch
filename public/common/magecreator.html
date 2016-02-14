@@ -42,6 +42,7 @@
 
 		socket.on('urlResponse', function(data) {
 			if (data.response) {
+				var createdMage = answersToMage(answers);
 				socket.emit('createMage', {mage: createdMage});
 			} else {
 				answers.pop();
@@ -53,7 +54,6 @@
 			if (data.response) {
 				// all done now display url of mage
 				$('#question').hide();
-				var createdMage = answersToMage(answers);
 				$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + createdMage.url + '</pre>');
 				var handshake = data.handshake;
 				var curMyMages = localStorage.getObject('myMages');
