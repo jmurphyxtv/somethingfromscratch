@@ -163,7 +163,7 @@
 					// moving into url chooser
 					$('#question').hide();
 					var createdMage = answersToMage(answers);
-					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location + '/' + createdMage.url + '</pre>');
+					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + createdMage.url + '</pre>');
 					socket.emit('createMage', {mage: createdMage});
 				}
 				console.log('valid');
@@ -442,7 +442,7 @@
 			padding: 1vh 1vw;
 		}
 		.sp-replacer {
-			transform: scale(2);
+			transform: scale(4);
 		}
 		#bgpreview {
 			border: 2px solid black;
