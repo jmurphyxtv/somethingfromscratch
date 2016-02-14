@@ -47,7 +47,7 @@
 			} else {
 				answers.pop();
 				displayAlert('url already taken', data.url);
-				$('body').css('cursor', 'default');
+				$('body, body *').css('cursor', 'default');
 			}
 		});
 
@@ -72,7 +72,7 @@
 				// if you followed the rules there's no reason you should be here
 				displayAlert('something went wrong or you are have to wait longer before you create another mage', 'you a hackzor?');
 			}
-			$('body').css('cursor', 'default');
+			$('body, body *').css('cursor', 'default');
 		});
 
 		// --------------------------------------------------
@@ -180,7 +180,6 @@
 				console.log('min')
 				return false;
 			} else if (restrictions.mustBe && restrictions.mustBe.indexOf(val) === -1) {
-				debugger;
 				displayAlert('must be: ' + restrictions.mustBe, val);
 				console.log('mustbe' + restrictions.mustBe.indexOf(val) + restrictions.mustBe + ' ' + val)
 				return false;
@@ -227,7 +226,7 @@
 						$('#pageDesigner').animate({'left': '0%'}, 1000);
 					});
 				} else if (currentlyAnswering === 5) {
-					$('body').css('cursor', 'wait');
+					$('body, body *').css('cursor', 'wait');
 					socket.emit('checkURL', {url: curInputVal});
 				}
 				console.log('valid');
@@ -359,13 +358,13 @@
 
 			$('body').on('change', 'input[type="file"]', function() {
 
-				$('body').css('cursor', 'wait');
+				$('body, body *').css('cursor', 'wait');
 
 				var files = $(this).prop('files');
         var file = files[0];
         if(file == null){
             alert("No file selected.");
-						$('body').css('cursor', 'default');
+						$('body, body *').css('cursor', 'default');
         }
         else{
             get_signed_request(file);
@@ -385,7 +384,7 @@
 		            }
 		            else{
 		                alert("Could not get signed URL.");
-										$('body').css('cursor', 'default');
+										$('body, body *').css('cursor', 'default');
 		            }
 		        }
 		    };
@@ -397,14 +396,14 @@
 		    xhr.open("PUT", signed_request);
 		    xhr.setRequestHeader('x-amz-acl', 'public-read');
 		    xhr.onload = function() {
-						$('body').css('cursor', 'default');
+						$('body, body *').css('cursor', 'default');
 		        if (xhr.status === 200) {
 								$('#bgpreview img').attr('src', url);
 								bgImgUrl = url;
 		        }
 		    };
 		    xhr.onerror = function(e) {
-						$('body').css('cursor', 'default');
+						$('body, body *').css('cursor', 'default');
 		        console.log("Could not upload file.");
 						console.log(e);
 		    };
