@@ -266,6 +266,8 @@ var dbFunctions = {
         done();
         result.rows.forEach(function(row) {
           console.log('current row: ' + JSON.stringify(row));
+          console.log('')
+          console.log(row.mageData);
           generateRoutesForMage(row.url, JSON.parse(row.mageData));
         });
       });
