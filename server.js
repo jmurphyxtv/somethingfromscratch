@@ -255,16 +255,23 @@ var dbFunctions = {
 
         done();
         if (err) console.log(err);
-        console.log('created new user ' + userId);
         cb();
 
+      });
+    });
+  },
+  loadAllMagesAndCreateRoutes: function() {
+    pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+      client.query('SELECT * FROM mages', function(err, result) {
+        console.log(result);
+        done();
       });
     });
   }
 }
 
 
-
+dbFunctions.loadAllMagesAndCreateRoutes();
 
 
 
