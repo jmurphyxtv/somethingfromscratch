@@ -32,11 +32,9 @@ var S3_BUCKET;
 //   }
 // });
 
-if (!S3_BUCKET) {
-  AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
-  AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
-  S3_BUCKET = process.env.S3_BUCKET;
-}
+AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
+AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
+S3_BUCKET = process.env.S3_BUCKET;
 console.log(AWS_ACCESS_KEY,AWS_SECRET_KEY,S3_BUCKET);
 
 var port = process.env.PORT || 5000; // Use the port that Heroku
