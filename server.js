@@ -263,7 +263,7 @@ var dbFunctions = {
   loadAllMagesAndCreateRoutes: function() {
     pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
       client.query('SELECT * FROM mages', function(err, result) {
-        console.log(result);
+        console.log(result.rows);
         done();
       });
     });
