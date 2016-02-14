@@ -162,6 +162,7 @@
 					});
 					displayPageDesigner();
 				} else if (currentlyAnswering === 5) {
+					$('#question').css('left', '0');
 					// moving into url chooser
 					$('#question').hide();
 					var createdMage = answersToMage(answers);
@@ -248,7 +249,7 @@
 						});
 					}
 
-					
+
 					$('#pageDesigner').css('left', '100%');
 					$('#pageDesigner').animate({'left': '0%'});
 				});
