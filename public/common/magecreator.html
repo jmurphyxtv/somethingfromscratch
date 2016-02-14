@@ -22,7 +22,61 @@
 
 		<script>
 
+
+		// --------------------------------------------------
+		//	UTIL
+		// --------------------------------------------------
+
+		Storage.prototype.setObject = function(key, value) {
+		    this.setItem(key, JSON.stringify(value));
+		}
+		Storage.prototype.getObject = function(key) {
+		    return JSON.parse(this.getItem(key));
+		}
+
+		// --------------------------------------------------
+		//	SETUP SOCKET EVENTS
+		// --------------------------------------------------
+
 		var socket = io();
+
+		socket.on('urlResponse', function(data) {
+			if (data.response) {
+				socket.emit('createMage', {mage: createdMage});
+			} else {
+				answers.pop();
+				displayAlert('url already taken', curInputVal);
+			}
+		});
+
+		socket.on('createResponse', function(data) {
+			if (data.response) {
+				// all done now display url of mage
+				$('#question').hide();
+				var createdMage = answersToMage(answers);
+				$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + createdMage.url + '</pre>');
+				var handshake = data.handshake;
+				var curMyMages = localStorage.getObject('myMages');
+				var newMyMages;
+				if (curMyMages) {
+					newMyMages = curMyMages.concat([{
+						handshake: handshake
+					}]);
+				} else {
+					newMyMages = [{
+						handshake: handshake
+					}];
+				}
+				localStorage.setObject('myMages', newMyMages);
+			} else {
+				// if you followed the rules there's no reason you should be here
+				displayAlert('something went wrong or you are have to wait longer before you create another mage', 'you a hackzor?');
+			}
+		});
+
+		// --------------------------------------------------
+		//	SETUP VARS
+		// --------------------------------------------------
 
 		var currentlyAnswering;
 		var answers = [];
@@ -93,6 +147,10 @@
 				getVal: 'bgImgUrl'
 			}
 		};
+
+		// --------------------------------------------------
+		//	METHODS
+		// --------------------------------------------------
 
 		var start = function(evt) {
 			currentlyAnswering = 1;
@@ -165,18 +223,7 @@
 					});
 				} else if (currentlyAnswering === 5) {
 					socket.emit('checkURL', {url: curInputVal});
-					socket.on('urlResponse', function(data) {
-						if (data.response) {
-							// all done now display url of mage
-							$('#question').hide();
-							var createdMage = answersToMage(answers);
-							$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + createdMage.url + '</pre>');
-							socket.emit('createMage', {mage: createdMage});
-						} else {
-							answers.pop();
-							displayAlert('username already taken', curInputVal);
-						}
-					})
+
 				}
 				console.log('valid');
 			} else {
@@ -292,6 +339,10 @@
 			}, 1350);
 
 		}
+
+		// --------------------------------------------------
+		//	UPLOAD STUFF
+		// --------------------------------------------------
 
 		$(function() {
 			// $('body').on('change', '.colorpicker', function() {

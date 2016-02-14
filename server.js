@@ -205,11 +205,18 @@ io.on('connection', function(socket) {
     console.log('generating for ' + data.mage.url);
     var url = data.mage.url;
     delete data.mage.url;
-    dbFunctions.createNewMage(url, data.mage, clientIp, loc, function() {
-      generateRoutesForMage(url, data.mage);
-      console.log();
-      console.log(data.mage);
-      console.log();
+    dbFunctions.checkUrlTaken(data.url, function(response) {
+      if (response) {
+        dbFunctions.createNewMage(url, data.mage, clientIp, loc, function(handshake) {
+          generateRoutesForMage(url, data.mage);
+          console.log();
+          console.log(data.mage);
+          console.log();
+          socket.emit('createResponse', {response: true, handshake: handshake});
+        });
+      } else {
+        socket.emit('createResponse', {response: false});
+      }
     });
 
   })
@@ -262,9 +269,10 @@ var dbFunctions = {
       var queryText = 'INSERT INTO mages (url, location, createdAt, mageData, handshake, ipaddr) VALUES($1, $2, $3, $4, $5, $6)';
       client.query(queryText, [url, loc, createdAt, JSON.stringify(mage), handshake, ip], function(err, result) {
 
+        console.log(result);
         done();
         if (err) console.log(err);
-        cb();
+        cb(handshake);
 
       });
     });
