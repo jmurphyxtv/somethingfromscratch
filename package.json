@@ -21,6 +21,8 @@
     "aws-sdk": "^2.2.35",
     "body-parser": "^1.14.2",
     "express": "^4.13.4",
+    "geoip-lite": "^1.1.6",
+    "node-uuid": "^1.4.7",
     "pg": "^4.4.4",
     "socket.io": "^1.4.5",
     "util": "^0.10.3"

@@ -5,9 +5,10 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var fs = require('fs');
+var geoip = require('geoip-lite');
+var uuid = require('node-uuid');
 
 var aws = require('aws-sdk');
-
 
 var loadAsset = function(file, cb) {
   fs.readFile(__dirname + file, 'utf8', function(err, response) {
@@ -116,9 +117,6 @@ function getLayoutHTML() {
 getLayoutHTML();
 
 var getPageFromUrl = function(mage, pageReq) {
-  console.log(mage);
-  console.log();
-  console.log(pageReq);
   var pages = mage.pages;
   for (var i = 0; i < pages.length; i++) {
     var page = pages[i];
@@ -163,10 +161,10 @@ var getPageFromPath = function(mage, path) {
 var generateRoutesForMage = function(username, mage) {
   var pages = mage.pages;
   for (var i = 0; i < pages.length; i++) {
-    console.log('new route: ' + '/' + mage.url + '/' + pages[i].name);
+    // console.log('new route: ' + '/' + mage.url + '/' + pages[i].name);
     app.get('/' + mage.url + '/' + pages[i].name, function(req, res, next) {
       var reqPage = req.url.split('/').pop();
-      console.log('reqpage' + reqPage)
+      // console.log('reqpage' + reqPage)
       getPageAndSendResponse(mage, reqPage, res);
     });
     app.get('/' + mage.url + '/', function(req, res, next) {
@@ -196,13 +194,23 @@ app.use(express.static(__dirname + '/public'));
 // });
 
 io.on('connection', function(socket) {
-  console.log('connected');
+
+  var clientIp = socket.handshake.headers['x-forwarded-for'];
+  var geo = geoip.lookup(clientIp);
+  var loc = (geo) ? geo.city + ', ' + geo.region + ' (' + geo.country + ')' : 'n/a';
+
+  console.log('connected: ' + clientIp + ' from ' + loc);
   socket.on('createMage', function(data) {
     console.log('generating for ' + data.mage.url);
-    generateRoutesForMage(data.mage.url, data.mage);
-    console.log();
-    console.log(data.mage);
-    console.log();
+    var url = data.mage.url;
+    delete data.mage.url;
+    dbFunctions.createMage(url, data.mage, clientIp, loc, function() {
+      generateRoutesForMage(url, data.mage);
+      console.log();
+      console.log(data.mage);
+      console.log();
+    });
+
   })
 });
 
@@ -231,3 +239,63 @@ app.get('/sign_s3', function(req, res){
         }
     });
 });
+
+// CREATE TABLE mages (mageId serial primary key, url VARCHAR(30) not null, location VARCHAR(30), createdAt VARCHAR(30) not null, mageData jsonb, handshake VARCHAR(50))
+
+
+var dbFunctions = {
+  createNewMage: function(url, mage, ip, loc, cb) {
+
+    var createdAt = getCurrentTimestamp();
+    var handshake = uuid.v1();
+    pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+      var queryText = 'INSERT INTO mages (url, location, createdAt, mageData, handshake, ipaddr) VALUES($1, $2, $3, $4, $5, $6)';
+      client.query(queryText, [url, loc, createdAt, JSON.stringify(mage), handshake, ip], function(err, result) {
+
+        done();
+        if (err) console.log(err);
+        console.log('created new user ' + userId);
+        cb();
+
+      });
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+function getCurrentTimestamp() {
+    var d = new Date();
+    var date = new Date();
+    date.setHours(d.getHours() - 8);
+
+    var hour = date.getHours();
+    var ampm = hour >= 12 ? 'pm' : 'am';
+    hour = hour % 12;
+    hour = hour ? hour : 12; // the hour '0' should be '12'
+
+    var min  = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec  = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day  = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return month + "/" + day + "/" + year + ' ' + hour + ':' + min + ampm;
+
+}
