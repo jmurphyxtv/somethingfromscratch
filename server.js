@@ -201,19 +201,19 @@ io.on('connection', function(socket) {
   var loc = (geo) ? geo.city + ', ' + geo.region + ' (' + geo.country + ')' : 'n/a';
 
   console.log('connected: ' + clientIp + ' from ' + loc);
-  
+
   socket.on('createMage', function(data) {
     console.log('generating for ' + data.mage.url);
     var url = data.mage.url;
     delete data.mage.url;
-    dbFunctions.checkUrlTaken(data.url, function(response) {
+    dbFunctions.checkUrlTaken(url, function(response) {
       if (response) {
         dbFunctions.createNewMage(url, data.mage, clientIp, loc, function(handshake) {
           generateRoutesForMage(url, data.mage);
           console.log();
           console.log(data.mage);
           console.log();
-          socket.emit('createResponse', {response: true, handshake: handshake, url: data.url});
+          socket.emit('createResponse', {response: true, handshake: handshake, url: url});
         });
       } else {
         socket.emit('createResponse', {response: false});
