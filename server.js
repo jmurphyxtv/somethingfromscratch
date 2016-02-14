@@ -265,10 +265,7 @@ var dbFunctions = {
       client.query('SELECT * FROM mages', function(err, result) {
         done();
         result.rows.forEach(function(row) {
-          console.log('current row: ' + JSON.stringify(row));
-          console.log('')
-          console.log(row.magedata);
-          generateRoutesForMage(row.url, JSON.parse(row.magedata));
+          generateRoutesForMage(row.url, row.magedata);
         });
       });
     });
