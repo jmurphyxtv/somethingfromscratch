@@ -126,6 +126,11 @@ $(document).ready(function() {
     $('.bgImg').css('background-image', 'url(' + currentMage.backgroundImage + ')');
   }
 
+  document.ontouchmove = function(event){
+    // disable ipad stretch effect
+    event.preventDefault();
+  }
+
 });
 
 function hexToRgb(hex) {
