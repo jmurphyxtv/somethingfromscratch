@@ -158,16 +158,16 @@ var getPageFromPath = function(mage, path) {
 //   });
 // });
 
-var generateRoutesForMage = function(username, mage) {
+var generateRoutesForMage = function(url, mage) {
   var pages = mage.pages;
   for (var i = 0; i < pages.length; i++) {
-    console.log('new route: ' + '/' + mage.url + '/' + pages[i].name);
-    app.get('/' + mage.url + '/' + pages[i].name, function(req, res, next) {
+    console.log('new route: ' + '/' + url + '/' + pages[i].name);
+    app.get('/' + url + '/' + pages[i].name, function(req, res, next) {
       var reqPage = req.url.split('/').pop();
       // console.log('reqpage' + reqPage)
       getPageAndSendResponse(mage, reqPage, res);
     });
-    app.get('/' + mage.url + '/', function(req, res, next) {
+    app.get('/' + url + '/', function(req, res, next) {
       getPageAndSendResponse(mage, mage.pages[0].name, res);
     });
   }
