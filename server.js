@@ -8,11 +8,11 @@ var fs = require('fs');
 var geoip = require('geoip-lite');
 var uuid = require('node-uuid');
 var webshot = require('webshot');
-webshot('google.com', 'public/google.png', {phantomPath: require('phantomjs2').path, renderDelay: 1000}, function(err) {
+webshot('google.com', 'public/google.png', {renderDelay: 1000}, function(err) {
   // screenshot now saved to google.png
 });
 
-webshot('http://www.bakeamage.com/slither', 'public/slither.png', {phantomPath: require('phantomjs2').path, renderDelay: 1000}, function(err) {
+webshot('http://www.bakeamage.com/slither', 'public/slither.png', {renderDelay: 1000}, function(err) {
   // screenshot now saved to google.png
 });
 var screenshot = require('node-webkit-screenshot');
