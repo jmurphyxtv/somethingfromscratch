@@ -353,13 +353,14 @@ function getCurrentTimestamp() {
 
 
 function getScreenshotAndUpload(url, cb) {
+  console.log('starting the ss for ' + url);
   screenshot({
     url : 'http://' + curHost + '/' + url,
     width : 1024,
     height : 768
   })
   .then(function(buffer){
-
+    console.log('got the buffer');
     var s3 = new aws.S3({params: { Bucket: S3_BUCKET, Key: 'screenshots/' + url + '.png' }});
     s3.upload({Body: buffer, ACL: "public-read", ContentType: 'image/png'}, function() {
       console.log("Successfully uploaded data to myBucket/myKey");
