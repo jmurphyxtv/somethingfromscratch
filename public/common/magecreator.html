@@ -142,7 +142,7 @@
 			if (validateInputVal(curInputVal, curQuestion.restrictions)) {
 
 				answers.push(curInputVal);
-				if (currentlyAnswering < 3) {
+				if (currentlyAnswering < 4) {
 					// first few q's
 					$('#question').animate({'left': '-100%'}, 1000, function() {
 						currentlyAnswering++;
@@ -449,6 +449,7 @@
 			float: left;
 			min-height: 200px;
 			text-align: center;
+			width: 20%;
 		}
 		#bgpreview img {
 			width: 90%;
