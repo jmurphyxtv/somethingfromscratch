@@ -283,6 +283,7 @@
 		        if(xhr.readyState === 4){
 		            if(xhr.status === 200){
 		                var response = JSON.parse(xhr.responseText);
+										console.log('got signed request now uploading...')
 		                upload_file(file, response.signed_request, response.url);
 		            }
 		            else{
@@ -303,7 +304,8 @@
 		        }
 		    };
 		    xhr.onerror = function(e) {
-		        console.log("Could not upload file." + e);
+		        console.log("Could not upload file.");
+						console.log(e);
 		    };
 		    xhr.send(file);
 		}
