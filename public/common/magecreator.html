@@ -302,8 +302,8 @@
 		            document.getElementById("bgpreview").src = url;
 		        }
 		    };
-		    xhr.onerror = function() {
-		        alert("Could not upload file.");
+		    xhr.onerror = function(e) {
+		        console.log("Could not upload file." + e);
 		    };
 		    xhr.send(file);
 		}
