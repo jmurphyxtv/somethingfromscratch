@@ -217,7 +217,7 @@
 			var animateOut = function(cb) {
 				$('#pageDesigner').animate({'left': '-100%'}, 1000, cb);
 			}
-			if (onPage == answers[2]) {
+			if (onPage == answers[3]) {
 				animateOut(function() {
 					$('#pageDesigner').hide();
 					$('#question').show();
@@ -450,6 +450,7 @@
 			min-height: 200px;
 			text-align: center;
 			width: 20%;
+			background-color: white;
 		}
 		#bgpreview img {
 			width: 90%;
