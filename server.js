@@ -6,6 +6,39 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var fs = require('fs');
 
+var aws = require('aws-sdk');
+
+
+var loadAsset = function(file, cb) {
+  fs.readFile(__dirname + file, 'utf8', function(err, response) {
+    if (err) {
+      cb('');
+    } else {
+      cb(response);
+    }
+  });
+};
+
+var AWS_ACCESS_KEY;
+var AWS_SECRET_KEY;
+var S3_BUCKET;
+// loadAsset('/awsconfig.txt', function(data) {
+//   console.log(data);
+//   if (data) {
+//     var parsed = JSON.parse(data);
+//     AWS_ACCESS_KEY = parsed.AWS_ACCESS_KEY;
+//     AWS_SECRET_KEY = parsed.AWS_SECRET_KEY;
+//     S3_BUCKET = parsed.S3_BUCKET;
+//   }
+// });
+
+if (!S3_BUCKET) {
+  AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
+  AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
+  S3_BUCKET = process.env.S3_BUCKET;
+}
+console.log(AWS_ACCESS_KEY,AWS_SECRET_KEY,S3_BUCKET);
+
 var port = process.env.PORT || 5000; // Use the port that Heroku
 server.listen(port);
 
@@ -75,16 +108,6 @@ var sampleMage = {
   ]
 };
 
-
-var loadAsset = function(file, cb) {
-  fs.readFile(__dirname + file, 'utf8', function(err, response) {
-    if (err) {
-      cb('');
-    } else {
-      cb(response);
-    }
-  });
-};
 
 var layoutHTML;
 function getLayoutHTML() {
@@ -171,4 +194,30 @@ io.on('connection', function(socket) {
     console.log(data.mage);
     console.log();
   })
+});
+
+
+app.get('/sign_s3', function(req, res){
+    aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
+    var s3 = new aws.S3();
+    var s3_params = {
+        Bucket: S3_BUCKET,
+        Key: req.query.file_name,
+        Expires: 60,
+        ContentType: req.query.file_type,
+        ACL: 'public-read'
+    };
+    s3.getSignedUrl('putObject', s3_params, function(err, data){
+        if(err){
+            console.log(err);
+        }
+        else{
+            var return_data = {
+                signed_request: data,
+                url: 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+req.query.file_name
+            };
+            res.write(JSON.stringify(return_data));
+            res.end();
+        }
+    });
 });

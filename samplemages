@@ -1,0 +1,40 @@
+{
+  url: 'blueberrymage',
+  name: 'Blueberry',
+  pages: [
+    { name: 'I\'m awesome', content: 'Yup. #fact' },
+    { name: 'I rock', content: 'Yup, fact' },
+    { name: 'I rule', content: 'yup yup' }
+  ]
+}
+
+{ url: 'http://bit16.co',
+   name: 'adam',
+   pages:
+    [ { name: 'my first page',
+        content: '<p>this is the body of my mage</p><br><br>' },
+      { name: 'page 2 of my mage',
+        content: '<p>asdfasgfdsasdfsafasdfsdgd</p>' },
+      { name: 'page 3 yo', content: 'here\'s the body 3' },
+      { name: 'last page bitches', content: 'check out this body' } ] }
+
+{ url: 'lionking',
+   name: 'Joe',
+   pages:
+    [ { name: 'Home',
+        content: '<p>Welcome to my homepage!</p><img src="http://vignette1.wikia.nocookie.net/lionking/images/e/e5/Mufasa.png/revision/latest?cb=20130512234313" alt="Mufasa">' },
+      { name: 'Scar',
+        content: '<img src="http://vignette1.wikia.nocookie.net/disneyvillains/images/0/09/TLKScar3.png/revision/latest?cb=20141012205451" alt="">' },
+      { name: 'No more', content: 'Stuff' } ] }
+
+
+{ url: 'smileysecrets',
+   name: 'smiley secrets',
+   pages:
+    [ { name: 'pink dresses',
+        content: '<h1>pink dresses are cute.</h1><h3>and pink dresses make the day better.</h3>' },
+      { name: 'corey and topanga, real love?',
+        content: 'corey and topanga- proven' },
+      { name: 'nachos are delicious',
+        content: '<p>cheese</p><p>chips</p><p>guaacamole</p><p>sour cream</p><p>beans</p><p>beef</p><p>jalepenos</p><p>hot sauce</p><br><p>"that sounds good!"</p>' } ] }
+  

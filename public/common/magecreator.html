@@ -13,10 +13,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<link href='https://fonts.googleapis.com/css?family=Candal' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="/common/base.css">
+		<link rel="stylesheet" href="/common/js/spectrum/spectrum.css">
+		<link rel="stylesheet" href="https://cdn.rawgit.com/Alex-D/Trumbowyg/2.0.0-beta.7/dist/ui/trumbowyg.min.css">
 
-<link rel="stylesheet" href="https://cdn.rawgit.com/Alex-D/Trumbowyg/2.0.0-beta.7/dist/ui/trumbowyg.min.css">
 		<script type="text/javascript" src="/common/js/jquery.trumbowyg.js"></script>
 		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+		<script type="text/javascript" src="/common/js/spectrum/spectrum.js"></script>
 
 		<script>
 
@@ -25,16 +27,49 @@
 		var currentlyAnswering;
 		var answers = [];
 		var onPage;
+		var colorchosen = '';
+		var bgImgUrl = '';
 
-		var start = function(evt) {
-			currentlyAnswering = 1;
-			$this = $(evt.target);
-			$('#container #startremove').fadeOut(500);
-			$this.fadeOut(500, function() {
-				$('#question').show();
-				startQuestions();
-			});
-		};
+		var questions = [
+			{
+				name: 'Enter a name for your Mage',
+				renderAs: 'TextInput',
+				restrictions: {
+					min: 3,
+					max: 25
+				}
+			},
+			{
+				name: 'What color would you like for your header?',
+				renderAs: 'ColorChooser',
+				restrictions: {
+					min: 5
+				}
+			},
+			{
+				name: 'Choose a background image for your Mage',
+				renderAs: 'BgImgUploader',
+				restrictions: {
+					min: 5
+				}
+			},
+			{
+				name: 'How many pages would you like on your Mage?',
+				renderAs: 'SelectBox',
+				restrictions: {
+					mustBe: "1234"
+				}
+			},
+			{
+				name: 'Choose a url for your Mage',
+				renderAs: 'UrlCompleter',
+				restrictions: {
+					min: 3,
+					max: 15,
+					noInclude: ' '
+				}
+			}
+		];
 
 		var renderTypes = {
 			'TextInput': {
@@ -48,8 +83,30 @@
 			'UrlCompleter': {
 				markup: '<div class="urlcompleter"><div></div><input type="text"></div>',
 				getVal: '$("#inputArea").find("input").val()'
+			},
+			'ColorChooser': {
+				markup: '<input type="text" class="colorpicker" />',
+				getVal: 'colorchosen'
+			},
+			'BgImgUploader': {
+				markup: '<img id="bgpreview"><input type="file">',
+				getVal: 'bgImgUrl'
 			}
 		};
+
+		var start = function(evt) {
+			currentlyAnswering = 1;
+			$this = $(evt.target);
+			$('#container #startremove').fadeOut(500);
+			$this.fadeOut(500, function() {
+				$('#question').show();
+				startQuestions();
+			});
+		};
+
+		var startQuestions = function() {
+			displayQuestion(currentlyAnswering);
+		}
 
 		var validateInputVal = function(val, restrictions) {
 			console.log('validating ' + val + ' with restrictions ' + restrictions);
@@ -85,14 +142,16 @@
 			if (validateInputVal(curInputVal, curQuestion.restrictions)) {
 
 				answers.push(curInputVal);
-				if (currentlyAnswering < 2) {
+				if (currentlyAnswering < 3) {
+					// first few q's
 					$('#question').animate({'left': '-100%'}, 1000, function() {
 						currentlyAnswering++;
 						displayQuestion(currentlyAnswering);
 						$('#question').css('left', '100%');
 						$('#question').animate({'left': '0%'});
 					});
-				} else if (currentlyAnswering === 2) {
+				} else if (currentlyAnswering === 4) {
+					// moving into page designer
 					console.log('here now')
 					currentlyAnswering++;
 					onPage = 1;
@@ -100,7 +159,8 @@
 					$('#pageDesigner').show();
 
 					displayPageDesigner();
-				} else if (currentlyAnswering === 3) {
+				} else if (currentlyAnswering === 5) {
+					// moving into url chooser
 					$('#question').hide();
 					var createdMage = answersToMage(answers);
 					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location + '/' + createdMage.url + '</pre>');
@@ -112,54 +172,11 @@
 			}
 		};
 
-		var answersToMage = function(answers) {
-			return {
-				url: answers[answers.length-1],
-				name: answers[0],
-				pages: answers.filter(function(item) {
-					if (item.name) {
-						return item;
-					}
-				})
-			}
-		}
-
 		var displayPageDesigner = function() {
 			$('#pageHeader').text('design page #' + onPage + ' here...');
 			$('#pageName').val('');
 			$('#wysiwyg').trumbowyg();
 			$('#wysiwyg').trumbowyg('empty');
-		}
-
-		var questions = [
-			{
-				name: 'Enter a name for your Mage',
-				renderAs: 'TextInput',
-				restrictions: {
-					min: 3,
-					max: 25
-				}
-			},
-			{
-				name: 'How many pages would you like on your Mage?',
-				renderAs: 'SelectBox',
-				restrictions: {
-					mustBe: "1234"
-				}
-			},
-			{
-				name: 'Choose a url for your Mage',
-				renderAs: 'UrlCompleter',
-				restrictions: {
-					min: 3,
-					max: 15,
-					noInclude: ' '
-				}
-			}
-		];
-
-		var startQuestions = function() {
-			displayQuestion(currentlyAnswering);
 		}
 
 		var displayQuestion = function(num) {
@@ -168,6 +185,26 @@
 			$('#inputArea').html(renderTypes[relatedQuestion.renderAs].markup);
 			if (relatedQuestion.renderAs === "UrlCompleter") {
 				$('.urlcompleter div').text('http://' + document.location.host + '/');
+			} else if (relatedQuestion.renderAs === "ColorChooser") {
+				$(".colorpicker").spectrum({
+		      color: "#000",
+		      showInput: true,
+					showAlpha: true,
+		      showPalette: true,
+		      palette: [
+		          ["#000","#444","#666","#999","#ccc","#eee","#f3f3f3","#fff"],
+		          ["#f00","#f90","#ff0","#0f0","#0ff","#00f","#90f","#f0f"],
+		          ["#f4cccc","#fce5cd","#fff2cc","#d9ead3","#d0e0e3","#cfe2f3","#d9d2e9","#ead1dc"],
+		          ["#ea9999","#f9cb9c","#ffe599","#b6d7a8","#a2c4c9","#9fc5e8","#b4a7d6","#d5a6bd"],
+		          ["#e06666","#f6b26b","#ffd966","#93c47d","#76a5af","#6fa8dc","#8e7cc3","#c27ba0"],
+		          ["#c00","#e69138","#f1c232","#6aa84f","#45818e","#3d85c6","#674ea7","#a64d79"],
+		          ["#900","#b45f06","#bf9000","#38761d","#134f5c","#0b5394","#351c75","#741b47"],
+		          ["#600","#783f04","#7f6000","#274e13","#0c343d","#073763","#20124d","#4c1130"]
+		      ],
+					move: function(color) {
+						colorchosen = color.toRgbString();
+					}
+		    });
 			}
 			$('#inputArea').focus();
 		}
@@ -180,7 +217,7 @@
 			var animateOut = function(cb) {
 				$('#pageDesigner').animate({'left': '-100%'}, 1000, cb);
 			}
-			if (onPage == answers[1]) {
+			if (onPage == answers[2]) {
 				animateOut(function() {
 					$('#pageDesigner').hide();
 					$('#question').show();
@@ -197,6 +234,19 @@
 			}
 		}
 
+		var answersToMage = function(answers) {
+			return {
+				url: answers[answers.length-1],
+				headerColor: answers[1],
+				name: answers[0],
+				pages: answers.filter(function(item) {
+					if (item.name) {
+						return item;
+					}
+				})
+			}
+		}
+
 		var displayAlert = function(text) {
 			$('#alert').text(text);
 			$('#alert').show();
@@ -210,8 +260,53 @@
 		}
 
 		$(function() {
+			// $('body').on('change', '.colorpicker', function() {
+			// 	colorchosen = $(this).spectrum('get').toRgbString();
+			// })
 
+			$('body').on('change', 'input[type="file"]', function() {
+				var files = $(this).prop('files');
+        var file = files[0];
+        if(file == null){
+            alert("No file selected.");
+        }
+        else{
+            get_signed_request(file);
+        }
+			});
 		})
+
+		function get_signed_request(file){
+		    var xhr = new XMLHttpRequest();
+		    xhr.open("GET", "/sign_s3?file_name="+file.name+"&file_type="+file.type);
+		    xhr.onreadystatechange = function(){
+		        if(xhr.readyState === 4){
+		            if(xhr.status === 200){
+		                var response = JSON.parse(xhr.responseText);
+		                upload_file(file, response.signed_request, response.url);
+		            }
+		            else{
+		                alert("Could not get signed URL.");
+		            }
+		        }
+		    };
+		    xhr.send();
+		}
+
+		function upload_file(file, signed_request, url){
+		    var xhr = new XMLHttpRequest();
+		    xhr.open("PUT", signed_request);
+		    xhr.setRequestHeader('x-amz-acl', 'public-read');
+		    xhr.onload = function() {
+		        if (xhr.status === 200) {
+		            document.getElementById("bgpreview").src = url;
+		        }
+		    };
+		    xhr.onerror = function() {
+		        alert("Could not upload file.");
+		    };
+		    xhr.send(file);
+		}
 		</script>
 
 		<style>
@@ -341,6 +436,18 @@
 			width: 100%;
 			background-color: rgba(255,255,255,0.6);
 			padding: 1vh 1vw;
+		}
+		.sp-replacer {
+			transform: scale(2);
+		}
+		#bgpreview {
+			border: 2px solid black;
+			border-right-width: 0;
+			float: left;
+			height: 100px;
+		}
+		input[type="file"] {
+			height: 100px;
 		}
 		</style>
 
