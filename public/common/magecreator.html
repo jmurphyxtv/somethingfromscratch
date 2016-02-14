@@ -47,6 +47,7 @@
 			} else {
 				answers.pop();
 				displayAlert('url already taken', data.url);
+				$('body').css('cursor', 'default');
 			}
 		});
 
@@ -54,7 +55,7 @@
 			if (data.response) {
 				// all done now display url of mage
 				$('#question').hide();
-				$('#results').html('<a href="/' + data.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + data.url + '</pre>');
+				$('#results').html('<a href="/' + data.url + '"><img src="' + data.screenshotUrl + '"><br><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + data.url + '</pre>');
 				var saveObj = {
 					url: data.url,
 					handhake: data.handshake
@@ -71,6 +72,7 @@
 				// if you followed the rules there's no reason you should be here
 				displayAlert('something went wrong or you are have to wait longer before you create another mage', 'you a hackzor?');
 			}
+			$('body').css('cursor', 'default');
 		});
 
 		// --------------------------------------------------
@@ -163,6 +165,8 @@
 
 		var startQuestions = function() {
 			displayQuestion(currentlyAnswering);
+			$('#question').css('left', '100%');
+			$('#question').animate({'left': '0%'}, 1000);
 		}
 
 		var validateInputVal = function(val, restrictions) {
@@ -189,7 +193,8 @@
 					}
 				};
 			} else if (restrictions.alphanumeric && !val.match(/^[a-z0-9]+$/i)) {
-				displayAlert('must be alphanumeric');
+				displayAlert('must be alphanumeric', val);
+				return false;
 			}
 			return true;
 		};
@@ -201,28 +206,29 @@
 			if (validateInputVal(curInputVal, curQuestion.restrictions)) {
 
 				answers.push(curInputVal);
+				$('input[type="submit"]').prop('disabled', true);
 				if (currentlyAnswering < 4) {
 					// first few q's
-					$('#question').animate({'left': '-100%'}, 1000, function() {
+					$('#question').animate({'left': '-100%'}, 500, function() {
 						currentlyAnswering++;
 						displayQuestion(currentlyAnswering);
 						$('#question').css('left', '100%');
-						$('#question').animate({'left': '0%'});
+						$('#question').animate({'left': '0%'}, 1000);
 					});
 				} else if (currentlyAnswering === 4) {
 					// moving into page designer
-					$('#question').animate({'left': '-100%'}, 1000, function() {
+					$('#question').animate({'left': '-100%'}, 500, function() {
 						currentlyAnswering++;
 						onPage = 1;
 						$('#question').hide();
 						$('#pageDesigner').css('left', '100%');
 						$('#pageDesigner').show();
 						displayPageDesigner();
-						$('#pageDesigner').animate({'left': '0%'});
+						$('#pageDesigner').animate({'left': '0%'}, 1000);
 					});
 				} else if (currentlyAnswering === 5) {
+					$('body').css('cursor', 'wait');
 					socket.emit('checkURL', {url: curInputVal});
-
 				}
 				console.log('valid');
 			} else {
@@ -235,6 +241,7 @@
 			$('#pageName').val('');
 			$('#wysiwyg').trumbowyg();
 			$('#wysiwyg').trumbowyg('empty');
+			$('input[type="submit"]').prop('disabled', false);
 		}
 
 		var displayQuestion = function(num) {
@@ -264,7 +271,8 @@
 					}
 		    });
 			}
-			$('#inputArea').focus();
+			$('#inputArea input').focus();
+			$('input[type="submit"]').prop('disabled', false);
 		}
 
 		var submitPage = function() {
@@ -279,14 +287,15 @@
 				max: 15000
 			})) {
 
-				$('#question').animate({'left': '-100%'}, 1000, function() {
+				$('input[type="submit"]').prop('disabled', true);
+				$('#question').animate({'left': '-100%'}, 500, function() {
 
 					answers.push({
 						name: $('#pageName').val(),
 						content: content
 					});
 					var animateOut = function(cb) {
-						$('#pageDesigner').animate({'left': '-100%'}, 1000, cb);
+						$('#pageDesigner').animate({'left': '-100%'}, 500, cb);
 					}
 					if (onPage == answers[3]) {
 						animateOut(function() {
@@ -300,13 +309,13 @@
 							onPage++;
 							displayPageDesigner();
 							$('#pageDesigner').css('left', '100%');
-							$('#pageDesigner').animate({'left': '0%'});
+							$('#pageDesigner').animate({'left': '0%'}, 1000);
 						});
 					}
 
 
 					$('#pageDesigner').css('left', '100%');
-					$('#pageDesigner').animate({'left': '0%'});
+					$('#pageDesigner').animate({'left': '0%'}, 1000);
 				});
 
 			}
@@ -349,10 +358,14 @@
 			// })
 
 			$('body').on('change', 'input[type="file"]', function() {
+
+				$('body').css('cursor', 'wait');
+
 				var files = $(this).prop('files');
         var file = files[0];
         if(file == null){
             alert("No file selected.");
+						$('body').css('cursor', 'default');
         }
         else{
             get_signed_request(file);
@@ -372,6 +385,7 @@
 		            }
 		            else{
 		                alert("Could not get signed URL.");
+										$('body').css('cursor', 'default');
 		            }
 		        }
 		    };
@@ -383,12 +397,14 @@
 		    xhr.open("PUT", signed_request);
 		    xhr.setRequestHeader('x-amz-acl', 'public-read');
 		    xhr.onload = function() {
+						$('body').css('cursor', 'default');
 		        if (xhr.status === 200) {
 								$('#bgpreview img').attr('src', url);
 								bgImgUrl = url;
 		        }
 		    };
 		    xhr.onerror = function(e) {
+						$('body').css('cursor', 'default');
 		        console.log("Could not upload file.");
 						console.log(e);
 		    };
@@ -507,6 +523,9 @@
 			background-color: black;
 			color: white;
 		}
+		#inputArea {
+			padding: 1%;
+		}
 		.trumbowyg-box * {
 			font-family: initial;
 			font-size: initial;
@@ -544,6 +563,15 @@
 			height: 100px;
 			border-left: 0;
 			background-color: rgba(255,255,255,0.5);
+		}
+		#results pre {
+			font-size: 200%;
+			padding: 1em;
+			background-color: rgba(255,255,255,0.3);
+		}
+		#results img {
+			border: 2px solid black;
+			margin-bottom: 13px;
 		}
 		</style>
 

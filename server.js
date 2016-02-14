@@ -8,6 +8,8 @@ var fs = require('fs');
 var geoip = require('geoip-lite');
 var uuid = require('node-uuid');
 
+var screenshot = require('node-webkit-screenshot');
+
 var aws = require('aws-sdk');
 
 var loadAsset = function(file, cb) {
@@ -195,10 +197,15 @@ app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function(socket) {
 
+  var geo, loc;
+
   var clientIp = socket.handshake.headers['x-forwarded-for'];
-  clientIp = (clientIp.indexOf(',') > -1) ? clientIp.split(',')[0] : clientIp;
-  var geo = geoip.lookup(clientIp);
-  var loc = (geo) ? geo.city + ', ' + geo.region + ' (' + geo.country + ')' : 'n/a';
+
+  if (clientIp) {
+    clientIp = (clientIp.indexOf(',') > -1) ? clientIp.split(',')[0] : clientIp;
+    geo = geoip.lookup(clientIp);
+    loc = (geo) ? geo.city + ', ' + geo.region + ' (' + geo.country + ')' : 'n/a';
+  }
 
   console.log('connected: ' + clientIp + ' from ' + loc);
 
@@ -213,7 +220,13 @@ io.on('connection', function(socket) {
           console.log();
           console.log(data.mage);
           console.log();
-          socket.emit('createResponse', {response: true, handshake: handshake, url: url});
+
+          console.log('webshotting... ' + 'http://' + curHost + '/' + url);
+
+          getScreenshotAndUpload(url, function(screenshotUrl) {
+            socket.emit('createResponse', {response: true, handshake: handshake, url: url, screenshotUrl: screenshotUrl});
+          });
+
         });
       } else {
         socket.emit('createResponse', {response: false});
@@ -230,13 +243,14 @@ io.on('connection', function(socket) {
           response: response,
           url: data.url
         });
-      }, 1000);
+      }, 300);
     });
   });
 });
 
-
+var curHost;
 app.get('/sign_s3', function(req, res){
+  curHost = req.get('host');
     aws.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
     var s3 = new aws.S3();
     var s3_params = {
@@ -335,4 +349,24 @@ function getCurrentTimestamp() {
 
     return month + "/" + day + "/" + year + ' ' + hour + ':' + min + ampm;
 
+}
+
+
+function getScreenshotAndUpload(url, cb) {
+  screenshot({
+    url : 'http://' + curHost + '/' + url,
+    width : 1024,
+    height : 768
+  })
+  .then(function(buffer){
+
+    var s3 = new aws.S3({params: { Bucket: S3_BUCKET, Key: 'screenshots/' + url + '.png' }});
+    s3.upload({Body: buffer, ACL: "public-read", ContentType: 'image/png'}, function() {
+      console.log("Successfully uploaded data to myBucket/myKey");
+      cb('https://johns-norcal.s3.amazonaws.com/screenshots/' + url + '.png');
+    });
+
+    screenshot.close();
+
+  });
 }
