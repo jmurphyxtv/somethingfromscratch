@@ -152,12 +152,14 @@
 					});
 				} else if (currentlyAnswering === 4) {
 					// moving into page designer
-					console.log('here now')
-					currentlyAnswering++;
-					onPage = 1;
-					$('#question').hide();
-					$('#pageDesigner').show();
-
+					$('#question').animate({'left': '-100%'}, 1000, function() {
+						currentlyAnswering++;
+						onPage = 1;
+						$('#question').hide();
+						$('#pageDesigner').css('left', '100%');
+						$('#pageDesigner').show();
+						$('#pageDesigner').animate({'left': '0%'});
+					});
 					displayPageDesigner();
 				} else if (currentlyAnswering === 5) {
 					// moving into url chooser
@@ -221,28 +223,35 @@
 				max: 15000
 			})) {
 
-				answers.push({
-					name: $('#pageName').val(),
-					content: content
+				$('#question').animate({'left': '-100%'}, 1000, function() {
+
+					answers.push({
+						name: $('#pageName').val(),
+						content: content
+					});
+					var animateOut = function(cb) {
+						$('#pageDesigner').animate({'left': '-100%'}, 1000, cb);
+					}
+					if (onPage == answers[3]) {
+						animateOut(function() {
+							$('#pageDesigner').hide();
+							$('#question').show();
+							displayQuestion(currentlyAnswering);
+							console.log('time fo rurl');
+						});
+					} else {
+						animateOut(function() {
+							onPage++;
+							displayPageDesigner();
+							$('#pageDesigner').css('left', '100%');
+							$('#pageDesigner').animate({'left': '0%'});
+						});
+					}
+
+					
+					$('#pageDesigner').css('left', '100%');
+					$('#pageDesigner').animate({'left': '0%'});
 				});
-				var animateOut = function(cb) {
-					$('#pageDesigner').animate({'left': '-100%'}, 1000, cb);
-				}
-				if (onPage == answers[3]) {
-					animateOut(function() {
-						$('#pageDesigner').hide();
-						$('#question').show();
-						displayQuestion(currentlyAnswering);
-						console.log('time fo rurl');
-					});
-				} else {
-					animateOut(function() {
-						onPage++;
-						displayPageDesigner();
-						$('#pageDesigner').css('left', '100%');
-						$('#pageDesigner').animate({'left': '0%'});
-					});
-				}
 
 			}
 
