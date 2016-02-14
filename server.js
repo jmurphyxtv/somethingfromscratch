@@ -264,9 +264,9 @@ var dbFunctions = {
     pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
       client.query('SELECT * FROM mages', function(err, result) {
         done();
-        console.log(result.rows);
         result.rows.forEach(function(row) {
-            generateRoutesForMage(row.url, row.mageData);
+          console.log('current row: ' + JSON.stringify(row));
+          generateRoutesForMage(row.url, row.mageData);
         });
       });
     });
