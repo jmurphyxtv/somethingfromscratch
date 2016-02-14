@@ -122,6 +122,10 @@ $(document).ready(function() {
     $('#container > h1').css('background-color', currentMage.headerColor);
   }
 
+  if (currentMage.backgroundImage) {
+    $('#bgImg').css('background-image', 'url(' + currentMage.backgroundImage + ')');
+  }
+
 });
 
 function hexToRgb(hex) {
