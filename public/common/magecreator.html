@@ -162,8 +162,7 @@
 						$('#pageDesigner').animate({'left': '0%'});
 					});
 				} else if (currentlyAnswering === 5) {
-					$('#question').css('left', '0');
-					// moving into url chooser
+					// all done now display url of mage
 					$('#question').hide();
 					var createdMage = answersToMage(answers);
 					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + createdMage.url + '</pre>');
@@ -238,7 +237,7 @@
 							$('#pageDesigner').hide();
 							$('#question').show();
 							displayQuestion(currentlyAnswering);
-							console.log('time fo rurl');
+							$('#question').css('left', '0');
 						});
 					} else {
 						animateOut(function() {
