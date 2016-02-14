@@ -15,6 +15,19 @@ webshot('google.com', 'public/google.png', {renderDelay: 1000}, function(err) {
 webshot('http://www.bakeamage.com/slither', 'public/slither.png', {renderDelay: 1000}, function(err) {
   // screenshot now saved to google.png
 });
+
+var screenshot = require('url-to-screenshot');
+
+screenshot('http://www.bakeamage.com/slither')
+  .width(800)
+  .height(600)
+  .capture(function(err, img) {
+    if (err) throw err;
+    fs.writeFileSync(__dirname + '/public/example.png', img);
+    console.log('open example.png');
+  });
+
+
 var screenshot = require('node-webkit-screenshot');
 
 var aws = require('aws-sdk');
