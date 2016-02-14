@@ -16,17 +16,12 @@ webshot('http://www.bakeamage.com/slither', 'public/slither.png', {renderDelay: 
   // screenshot now saved to google.png
 });
 
-var screenshot = require('url-to-screenshot');
-
-screenshot('http://www.bakeamage.com/slither')
-  .width(800)
-  .height(600)
-  .capture(function(err, img) {
-    if (err) throw err;
-    fs.writeFileSync(__dirname + '/public/example.png', img);
-    console.log('open example.png');
-  });
-
+var urlToImage = require('url-to-image');
+urlToImage('http://www.bakeamage.com/slither', 'public/google2.png').then(function() {
+    // now google.png exists and contains screenshot of google.com
+}).catch(function(err) {
+    console.error(err);
+});
 
 var screenshot = require('node-webkit-screenshot');
 
