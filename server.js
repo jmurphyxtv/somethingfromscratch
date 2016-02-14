@@ -161,7 +161,7 @@ var getPageFromPath = function(mage, path) {
 var generateRoutesForMage = function(username, mage) {
   var pages = mage.pages;
   for (var i = 0; i < pages.length; i++) {
-    // console.log('new route: ' + '/' + mage.url + '/' + pages[i].name);
+    console.log('new route: ' + '/' + mage.url + '/' + pages[i].name);
     app.get('/' + mage.url + '/' + pages[i].name, function(req, res, next) {
       var reqPage = req.url.split('/').pop();
       // console.log('reqpage' + reqPage)
