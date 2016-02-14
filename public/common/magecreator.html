@@ -66,7 +66,7 @@
 				restrictions: {
 					min: 3,
 					max: 15,
-					noInclude: ' '
+					alphanumeric: true
 				}
 			}
 		];
@@ -131,6 +131,8 @@
 						return false;
 					}
 				};
+			} else if (restrictions.alphanumeric && !val.match(/^[a-z0-9]+$/i)) {
+				displayAlert('must be alphanumeric');
 			}
 			return true;
 		};
@@ -162,11 +164,19 @@
 						$('#pageDesigner').animate({'left': '0%'});
 					});
 				} else if (currentlyAnswering === 5) {
-					// all done now display url of mage
-					$('#question').hide();
-					var createdMage = answersToMage(answers);
-					$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + createdMage.url + '</pre>');
-					socket.emit('createMage', {mage: createdMage});
+					socket.emit('checkURL', {url: curInputVal});
+					socket.on('urlResponse', function(data) {
+						if (data.response) {
+							// all done now display url of mage
+							$('#question').hide();
+							var createdMage = answersToMage(answers);
+							$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + createdMage.url + '</pre>');
+							socket.emit('createMage', {mage: createdMage});
+						} else {
+							answers.pop();
+							displayAlert('username already taken');
+						}
+					})
 				}
 				console.log('valid');
 			} else {
