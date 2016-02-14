@@ -172,7 +172,7 @@ var generateRoutesForMage = function(url, mage) {
     });
   }
 }
-generateRoutesForMage(sampleMage.username, sampleMage);
+generateRoutesForMage(sampleMage.url, sampleMage);
 generateRoutesForMage('Slither',
   {
     url: 'Slither',

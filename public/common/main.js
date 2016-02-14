@@ -123,7 +123,7 @@ $(document).ready(function() {
   }
 
   if (currentMage.backgroundImage) {
-    $('.bgImg').css('background-image', 'url(' + currentMage.backgroundImage + ')');
+    $('.bgImg').css('background-image', 'url("' + currentMage.backgroundImage + '")');
   }
 
   document.ontouchmove = function(event){
