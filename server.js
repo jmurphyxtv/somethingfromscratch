@@ -213,6 +213,14 @@ io.on('connection', function(socket) {
     });
 
   })
+
+  socket.on('checkUrl', function(data) {
+    dbFunction.checkUrlTaken(data.url, function(response) {
+      setTimeout(function() {
+        socket.emit('urlResponse', {response: response});
+      }, 1000);
+    });
+  });
 });
 
 
@@ -267,6 +275,14 @@ var dbFunctions = {
         result.rows.forEach(function(row) {
           generateRoutesForMage(row.url, row.magedata);
         });
+      });
+    });
+  },
+  checkUrlTaken: function(url, cb) {
+    pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+      client.query('SELECT * FROM mages WHERE url = "' + url + '"', function(err, result) {
+        done();
+        cb(result.rows > 0);
       });
     });
   }
