@@ -45,7 +45,7 @@
 				socket.emit('createMage', {mage: createdMage});
 			} else {
 				answers.pop();
-				displayAlert('url already taken', curInputVal);
+				displayAlert('url already taken', data.url);
 			}
 		});
 

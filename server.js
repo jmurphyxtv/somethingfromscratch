@@ -225,7 +225,10 @@ io.on('connection', function(socket) {
     console.log('checking ' + data.url);
     dbFunctions.checkUrlTaken(data.url, function(response) {
       setTimeout(function() {
-        socket.emit('urlResponse', {response: response});
+        socket.emit('urlResponse', {
+          response: response,
+          url: data.url
+        });
       }, 1000);
     });
   });
