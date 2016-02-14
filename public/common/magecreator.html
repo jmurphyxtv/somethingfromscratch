@@ -112,22 +112,22 @@
 			console.log('validating ' + val + ' with restrictions ' + restrictions);
 			if (restrictions.max && val.length > restrictions.max) {
 				console.log('max')
-				displayAlert('maximum length: ' + restrictions.max);
+				displayAlert('maximum length: ' + restrictions.max, val);
 				return false;
 			} else if (restrictions.min && val.length < restrictions.min) {
-				displayAlert('minnimum length: ' + restrictions.min);
+				displayAlert('minnimum length: ' + restrictions.min, val);
 				console.log('min')
 				return false;
 			} else if (restrictions.mustBe && restrictions.mustBe.indexOf(val) === -1) {
 				debugger;
-				displayAlert('must be: ' + restrictions.mustBe);
+				displayAlert('must be: ' + restrictions.mustBe, val);
 				console.log('mustbe' + restrictions.mustBe.indexOf(val) + restrictions.mustBe + ' ' + val)
 				return false;
 			} else if (restrictions.noInclude) {
 				var badChars = restrictions.noInclude.split()
 				for (var i = 0; i < badChars.length; i++) {
 					if (val.indexOf(badChars[i]) > -1) {
-						displayAlert('cant include: ' + JSON.stringify(restrictions.noInclude));
+						displayAlert('cant include: ' + JSON.stringify(restrictions.noInclude), val);
 						return false;
 					}
 				};
@@ -210,28 +210,42 @@
 		}
 
 		var submitPage = function() {
-			answers.push({
-				name: $('#pageName').val(),
-				content: $('#wysiwyg').trumbowyg('html')
-			});
-			var animateOut = function(cb) {
-				$('#pageDesigner').animate({'left': '-100%'}, 1000, cb);
-			}
-			if (onPage == answers[3]) {
-				animateOut(function() {
-					$('#pageDesigner').hide();
-					$('#question').show();
-					displayQuestion(currentlyAnswering);
-					console.log('time fo rurl');
+
+			var content = $('#wysiwyg').trumbowyg('html');
+
+			if (validateInputVal($('#pageName').val(), {
+				min: 3,
+				max: 15
+			}) && validateInputVal(content, {
+				min: 3,
+				max: 15000
+			})) {
+
+				answers.push({
+					name: $('#pageName').val(),
+					content: content
 				});
-			} else {
-				animateOut(function() {
-					onPage++;
-					displayPageDesigner();
-					$('#pageDesigner').css('left', '100%');
-					$('#pageDesigner').animate({'left': '0%'});
-				});
+				var animateOut = function(cb) {
+					$('#pageDesigner').animate({'left': '-100%'}, 1000, cb);
+				}
+				if (onPage == answers[3]) {
+					animateOut(function() {
+						$('#pageDesigner').hide();
+						$('#question').show();
+						displayQuestion(currentlyAnswering);
+						console.log('time fo rurl');
+					});
+				} else {
+					animateOut(function() {
+						onPage++;
+						displayPageDesigner();
+						$('#pageDesigner').css('left', '100%');
+						$('#pageDesigner').animate({'left': '0%'});
+					});
+				}
+
 			}
+
 		}
 
 		var answersToMage = function(answers) {
@@ -248,8 +262,8 @@
 			}
 		}
 
-		var displayAlert = function(text) {
-			$('#alert').text(text);
+		var displayAlert = function(text, curVal) {
+			$('#alert').html(text + '<br><i>current value: ' + curVal + '</i>');
 			$('#alert').show();
 			$('#alert').animate({width: '100%'});
 			setTimeout(function() {
