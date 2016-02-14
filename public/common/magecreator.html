@@ -54,18 +54,17 @@
 			if (data.response) {
 				// all done now display url of mage
 				$('#question').hide();
-				$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + createdMage.url + '</pre>');
-				var handshake = data.handshake;
+				$('#results').html('<a href="/' + createdMage.url + '"><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + data.url + '</pre>');
+				var saveObj = {
+					url: data.url,
+					handhake: data.handshake
+				};
 				var curMyMages = localStorage.getObject('myMages');
 				var newMyMages;
 				if (curMyMages) {
-					newMyMages = curMyMages.concat([{
-						handshake: handshake
-					}]);
+					newMyMages = curMyMages.concat([saveObj]);
 				} else {
-					newMyMages = [{
-						handshake: handshake
-					}];
+					newMyMages = [saveObj];
 				}
 				localStorage.setObject('myMages', newMyMages);
 			} else {

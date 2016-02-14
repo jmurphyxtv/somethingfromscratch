@@ -201,6 +201,7 @@ io.on('connection', function(socket) {
   var loc = (geo) ? geo.city + ', ' + geo.region + ' (' + geo.country + ')' : 'n/a';
 
   console.log('connected: ' + clientIp + ' from ' + loc);
+  
   socket.on('createMage', function(data) {
     console.log('generating for ' + data.mage.url);
     var url = data.mage.url;
@@ -212,7 +213,7 @@ io.on('connection', function(socket) {
           console.log();
           console.log(data.mage);
           console.log();
-          socket.emit('createResponse', {response: true, handshake: handshake});
+          socket.emit('createResponse', {response: true, handshake: handshake, url: data.url});
         });
       } else {
         socket.emit('createResponse', {response: false});
