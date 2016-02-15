@@ -7,22 +7,6 @@ var io = require('socket.io')(server);
 var fs = require('fs');
 var geoip = require('geoip-lite');
 var uuid = require('node-uuid');
-var webshot = require('webshot');
-webshot('google.com', 'public/google.png', {renderDelay: 1000}, function(err) {
-  // screenshot now saved to google.png
-});
-
-webshot('http://www.bakeamage.com/slither', 'public/slither.png', {renderDelay: 1000}, function(err) {
-  // screenshot now saved to google.png
-});
-
-var urlToImage = require('url-to-image');
-urlToImage('http://www.bakeamage.com/slither', 'public/google2.png').then(function() {
-    // now google.png exists and contains screenshot of google.com
-}).catch(function(err) {
-    console.error(err);
-});
-
 var screenshot = require('node-webkit-screenshot');
 
 var aws = require('aws-sdk');
@@ -53,6 +37,7 @@ var S3_BUCKET;
 AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID;
 AWS_SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 S3_BUCKET = process.env.S3_BUCKET_NAME;
+
 console.log(AWS_ACCESS_KEY,AWS_SECRET_KEY,S3_BUCKET);
 
 var port = process.env.PORT || 5000; // Use the port that Heroku
@@ -230,25 +215,25 @@ io.on('connection', function(socket) {
     delete data.mage.url;
     dbFunctions.checkUrlTaken(url, function(response) {
       if (response) {
-        dbFunctions.createNewMage(url, data.mage, clientIp, loc, function(handshake) {
-          generateRoutesForMage(url, data.mage);
-          console.log();
-          console.log(data.mage);
-          console.log();
 
-          console.log('webshotting... ' + 'http://' + curHost + '/' + url);
+        generateRoutesForMage(url, data.mage);
+        console.log('webshotting... ' + 'http://' + curHost + '/' + url);
+        getScreenshotAndUpload(url, function(screenshotUrl) {
 
-          getScreenshotAndUpload(url, function(screenshotUrl) {
+          dbFunctions.createNewMage(url, data.mage, clientIp, loc, screenshotUrl, function(handshake) {
+            console.log();
+            console.log(data.mage);
+            console.log();
             socket.emit('createResponse', {response: true, handshake: handshake, url: url, screenshotUrl: screenshotUrl});
           });
-
         });
+
       } else {
         socket.emit('createResponse', {response: false});
       }
     });
 
-  })
+  });
 
   socket.on('checkURL', function(data) {
     console.log('checking ' + data.url);
@@ -260,6 +245,40 @@ io.on('connection', function(socket) {
         });
       }, 300);
     });
+  });
+
+  socket.on('getRecentMages', function() {
+    dbFunctions.getRecentMages(function(data) {
+      console.log(data);
+      socket.emit('receiveRecentMages', data);
+    });
+  });
+
+  socket.on('getMyMages', function(usersMages) {
+    var responseMages = [];
+    var countBack = 0;
+    for (var i = 0; i < usersMages.length; i++) {
+      var mage = usersMages[i];
+      dbFunctions.lookupMage(mage, function(response) {
+        if (response) {
+          responseMages.push(response);
+          console.log('GOOD' + JSON.stringify(response));
+          console.log(responseMages);
+        } else {
+          console.log('nah...' + JSON.stringify(mage));
+        }
+        countBack++;
+        console.log(countBack);
+        console.log(usersMages.length);
+        if (countBack === usersMages.length) {
+          socket.emit('receiveMyMages', responseMages);
+          console.log('emiting');
+        } else {
+          console.log('nah');
+        }
+      });
+    }
+
   });
 });
 
@@ -294,13 +313,13 @@ app.get('/sign_s3', function(req, res){
 
 
 var dbFunctions = {
-  createNewMage: function(url, mage, ip, loc, cb) {
+  createNewMage: function(url, mage, ip, loc, screenshotUrl, cb) {
 
     var createdAt = getCurrentTimestamp();
     var handshake = uuid.v1();
     pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
-      var queryText = 'INSERT INTO mages (url, location, createdAt, mageData, handshake, ipaddr) VALUES($1, $2, $3, $4, $5, $6)';
-      client.query(queryText, [url, loc, createdAt, JSON.stringify(mage), handshake, ip], function(err, result) {
+      var queryText = 'INSERT INTO mages (url, location, createdAt, mageData, handshake, ipaddr, screenshoturl) VALUES($1, $2, $3, $4, $5, $6, $7)';
+      client.query(queryText, [url, loc, createdAt, JSON.stringify(mage), handshake, ip, screenshotUrl], function(err, result) {
 
         console.log(result);
         done();
@@ -326,6 +345,37 @@ var dbFunctions = {
       client.query('SELECT * FROM mages WHERE url = \'' + url + '\'', function(err, result) {
         done();
         cb(!result.rows.length);
+      });
+    });
+  },
+  getRecentMages: function(cb) {
+    pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+      client.query('SELECT * FROM mages WHERE screenshoturl <> \'\' ORDER BY mageid DESC LIMIT 10', function(err, result) {
+        done();
+        var returnArr = result.rows;
+        console.log(returnArr);
+        returnArr = (returnArr) ? returnArr.map(function(row) {
+          return {
+            url: row.url,
+            screenshoturl: row.screenshoturl
+          }
+        }) : null;
+        cb(returnArr);
+      });
+    });
+  },
+  lookupMage: function(mage, cb) {
+    pg.connect(process.env.DATABASE_URL + "?ssl=true", function(err, client, done) {
+      client.query('SELECT * FROM mages WHERE url = \'' + mage.url + '\' AND handshake = \'' + mage.handshake + '\'', function(err, result) {
+        done();
+        if (result && result.rows.length) {
+          cb({
+            url: result.rows[0].url,
+            screenshoturl: result.rows[0].screenshoturl
+          });
+        } else {
+          cb(null);
+        }
       });
     });
   }

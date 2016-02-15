@@ -47,7 +47,7 @@
 			} else {
 				answers.pop();
 				displayAlert('url already taken', data.url);
-				$('body, body *').css('cursor', 'default');
+				$('body, body *').css('cursor', '');
 			}
 		});
 
@@ -55,10 +55,10 @@
 			if (data.response) {
 				// all done now display url of mage
 				$('#question').hide();
-				$('#results').html('<a href="/' + data.url + '"><img src="' + data.screenshotUrl + '"><br><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + data.url + '</pre>');
+				$('#results').html('<a href="/' + data.url + '" target="_blank"><img src="' + data.screenshotUrl + '"><br><h1>SUCCESS: CLICK HERE TO VIEW YOUR NEWLY-CREATED MAGE!</h1></a><br><pre>URL: http://' + document.location.hostname + '/' + data.url + '</pre>');
 				var saveObj = {
 					url: data.url,
-					handhake: data.handshake
+					handshake: data.handshake
 				};
 				var curMyMages = localStorage.getObject('myMages');
 				var newMyMages;
@@ -72,7 +72,7 @@
 				// if you followed the rules there's no reason you should be here
 				displayAlert('something went wrong or you are have to wait longer before you create another mage', 'you a hackzor?');
 			}
-			$('body, body *').css('cursor', 'default');
+			$('body, body *').css('cursor', '');
 		});
 
 		// --------------------------------------------------
@@ -364,7 +364,7 @@
         var file = files[0];
         if(file == null){
             alert("No file selected.");
-						$('body, body *').css('cursor', 'default');
+						$('body, body *').css('cursor', '');
         }
         else{
             get_signed_request(file);
@@ -384,7 +384,7 @@
 		            }
 		            else{
 		                alert("Could not get signed URL.");
-										$('body, body *').css('cursor', 'default');
+										$('body, body *').css('cursor', '');
 		            }
 		        }
 		    };
@@ -396,14 +396,14 @@
 		    xhr.open("PUT", signed_request);
 		    xhr.setRequestHeader('x-amz-acl', 'public-read');
 		    xhr.onload = function() {
-						$('body, body *').css('cursor', 'default');
+						$('body, body *').css('cursor', '');
 		        if (xhr.status === 200) {
 								$('#bgpreview img').attr('src', url);
 								bgImgUrl = url;
 		        }
 		    };
 		    xhr.onerror = function(e) {
-						$('body, body *').css('cursor', 'default');
+						$('body, body *').css('cursor', '');
 		        console.log("Could not upload file.");
 						console.log(e);
 		    };
@@ -417,47 +417,6 @@
 		}
 		#container {
 			z-index: 100;
-			text-align: center;s
-
-			min-height: 100%;  /* Fallback for vh unit */
-			min-height: 100vh; /* You might also want to use
-											'height' property instead.
-
-											Note that for percentage values of
-											'height' or 'min-height' properties,
-											the 'height' of the parent element
-											should be specified explicitly.
-
-											In this case the parent of '.vertical-center'
-											is the <body> element */
-
-			/* Make it a flex container */
-			display: -webkit-box;
-			display: -moz-box;
-			display: -ms-flexbox;
-			display: -webkit-flex;
-			display: flex;
-
-			/* Align the bootstrap's container vertically */
-				-webkit-box-align : center;
-			-webkit-align-items : center;
-					 -moz-box-align : center;
-					 -ms-flex-align : center;
-							align-items : center;
-
-			/* In legacy web browsers such as Firefox 9
-				 we need to specify the width of the flex container */
-			width: 100%;
-
-			/* Also 'margin: 0 auto' doesn't have any effect on flex items in such web browsers
-				 hence the bootstrap's container won't be aligned to the center anymore.
-
-				 Therefore, we should use the following declarations to get it centered again */
-						 -webkit-box-pack : center;
-								-moz-box-pack : center;
-								-ms-flex-pack : center;
-			-webkit-justify-content : center;
-							justify-content : center;
 		}
 		.trumbowyg-box {
 			background-color: white;
@@ -485,12 +444,13 @@
 			left: 0;
 			width: 100%;
 			height: 100%;
-			font-size: 200%;
+			font-size: 150%;
 			display: none;
 			font-family: initial;
+			border-collapse: collapse;
 		}
 		input, select {
-			font-size: 100%;
+			font-size: 80%;
 			width: 80%;
 			border: 2px solid black;
 			padding: 1em;
@@ -572,6 +532,9 @@
 			border: 2px solid black;
 			margin-bottom: 13px;
 		}
+		#pageheader {
+			padding-top: 10px;
+		}
 		</style>
 
 
@@ -579,11 +542,9 @@
 	</head>
 	<body>
 
-		<div id="container">
+		<div id="container" class="vertical-center">
 			<div>
 				<div id="startremove">
-					<h1>welcome to bake a mage</h1>
-					<h3>why make just another web page when you can bake a mage?</h3><br>
 					<img src="https://pixabay.com/static/uploads/photo/2014/04/02/14/12/chef-306513_960_720.png">
 				</div>
 				<button onclick="start(event)">Let's Get Cookin'!</button>

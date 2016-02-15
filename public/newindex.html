@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Bake A Mage</title>
+		<meta property="og:url" content="http://www.MusicPlatform.com" />
+		<meta property="og:title" content="Music Platform" />
+		<meta property="og:description" content="A community where people can upload and share their music." />
+		<meta property="og:image" content="http://www.tapfour10dollars.com/23f26651cb36afb340d6c39fe2753d82.png" />
+		<script src="https://code.jquery.com/jquery-1.10.0.min.js"></script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<link href='https://fonts.googleapis.com/css?family=Candal' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="/common/base.css">
+		<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+		<script>
+		var handleResize = function() {
+			var windowHeight = $(window).height();
+			var windowWidth = $(window).width();
+			if (windowWidth < 600) {
+				$('body').css('font-size', '3vw');
+			} else {
+				$('body').css('font-size', 'initial');
+			}
+			$('#iframe_main').css('height', (windowHeight - $('#iframe_main').position().top) + 'px');
+		};
+
+		var setURL = function(url) {
+			document.getElementById('iframe_main').src = url;
+		};
+
+		$( window ).resize(function() {
+			handleResize();
+		});
+		$(handleResize);
+		</script>
+
+    <style>
+		html, body {
+		  background-color: navy;
+		}
+    h1,h2,h3,h4,h5 {
+			margin-bottom: 0.2em;
+		}
+		.header {
+			background-color: lightgreen;
+			padding: 1em;
+			border-bottom: 1px solid white;
+		}
+		article {
+			margin: 1em;
+		}
+		article b {
+			display: block;
+			margin: 1.5em 20% 0;
+			padding: 0.8em;
+			background-color: rgba(255, 215, 0, 0.76);
+    	color: black;
+			border-radius: 8px 8px 0 0;
+		}
+		article h3 {
+			margin-top: 1em;
+		}
+		.vertical-center {
+			padding: auto 10%;
+		}
+		article div {
+			margin: auto 10%;
+			background-color: rgba(255,255,255,0.5);
+			padding: 2vh;
+			border: 2px solid rgba(255, 215, 0, 0.76);
+			font-family: webkit-body;
+		}
+		nav {
+			/*margin-top: 3vh;*/
+		}
+		nav button {
+			border: 1px solid green;
+			padding: 10px;
+			width: 25%;
+			font-size: 120%;
+			cursor: pointer;
+			/*height: 10vh;*/
+			outline: 0 !important;
+			background-color: rgb(192, 192, 192);
+		}
+		nav button:hover {
+			background-color: yellow;
+		}
+		iframe {
+			border: 0;
+			position: absolute;
+			left: 4%;
+			width: 92%;
+			height: 100%;
+		}
+		nav a {
+			border: 1px solid green;
+			padding: 10px;
+			background-color: rgb(192, 192, 192);
+		}
+		nav a:hover {
+			background-color: yellow;
+		}
+		nav a img {
+			position: relative;
+			top: 8px;
+		}
+    </style>
+
+
+	</head>
+	<body>
+
+		<div class="header">
+			<nav>
+				<a href="javascript:setURL('/index.html')"><img src="http://uxrepo.com/static/icon-sets/font-awesome/svg/home.svg" height="29px"></a>
+				<button onclick="setURL('/common/magecreator.html')">Bake A Mage</button>
+				<button onclick="setURL('/common/exploremages.html')">Explore Mages</button>
+				<button onclick="setURL('/common/mymages.html')">My Mages</button>
+			</nav>
+		</div>
+
+		<iframe src="index.html" id="iframe_main">
+
+  </body>
+</html>
